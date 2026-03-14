@@ -51,7 +51,14 @@ Plans:
   4. Admin can grant a license to a user by email, selecting license type (day pass with date / multi-day rental with expiry / permanent) and the grant appears in the license table
   5. Admin can revoke or modify an existing license grant and the change is immediately reflected
   6. Admin can publish, unpublish, edit, and delete routes; unpublished routes do not appear in the app catalog
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Backend gap (GET/PUT admin routes), Next.js scaffold, shared types, API client, Docker service
+- [ ] 02-02-PLAN.md — Login page, auth guard (AdminLayout), NavBar
+- [ ] 02-03-PLAN.md — Routes catalog table (/routes) and route create page (/routes/new) with GPX upload and WaypointEditor
+- [ ] 02-04-PLAN.md — Licenses table (/licenses) and grant license page (/licenses/new)
+- [ ] 02-05-PLAN.md — Route edit page (/routes/[id]) and license edit/revoke page (/licenses/[id])
 
 ### Phase 3: Android Catalog and Auth
 **Goal**: A rider can open the Android app, create or sign in to an account, browse the route catalog, and view route detail pages with a preview map — the complete pre-purchase experience works end-to-end.
@@ -120,7 +127,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Backend Foundation | 4/4 | Complete    | 2026-03-14 |
-| 2. Admin Dashboard | 0/? | Not started | - |
+| 2. Admin Dashboard | 0/5 | Not started | - |
 | 3. Android Catalog and Auth | 0/? | Not started | - |
 | 4. Android Encryption Layer | 0/? | Not started | - |
 | 5. License Enforcement | 0/? | Not started | - |
