@@ -62,7 +62,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **ADMIN-03**: Admin can manually grant a license to a user account (by email) for a specific route, selecting license type: day pass (with date), multi-day rental (with expiry date), or permanent
 - [ ] **ADMIN-04**: Admin can revoke or modify an existing license grant
 - [x] **ADMIN-05**: Admin can publish, unpublish, edit, and delete routes from the catalog
-- [ ] **ADMIN-06**: Admin can view all active license grants per route and per user
+- [x] **ADMIN-06**: Admin can view all active license grants per route and per user
 
 ---
 
@@ -148,7 +148,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMIN-03 | Phase 2 | Complete |
 | ADMIN-04 | Phase 2 | Pending |
 | ADMIN-05 | Phase 2 | Complete |
-| ADMIN-06 | Phase 2 | Pending |
+| ADMIN-06 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 34 total
