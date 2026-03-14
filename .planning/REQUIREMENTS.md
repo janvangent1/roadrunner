@@ -116,45 +116,54 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | — | Pending |
-| AUTH-02 | — | Pending |
-| AUTH-03 | — | Pending |
-| AUTH-04 | — | Pending |
-| CATA-01 | — | Pending |
-| CATA-02 | — | Pending |
-| CATA-03 | — | Pending |
-| CATA-04 | — | Pending |
-| DETL-01 | — | Pending |
-| DETL-02 | — | Pending |
-| DETL-03 | — | Pending |
-| DETL-04 | — | Pending |
-| LIC-01 | — | Pending |
-| LIC-02 | — | Pending |
-| LIC-03 | — | Pending |
-| LIC-04 | — | Pending |
-| NAV-01 | — | Pending |
-| NAV-02 | — | Pending |
-| NAV-03 | — | Pending |
-| NAV-04 | — | Pending |
-| NAV-05 | — | Pending |
-| NAV-06 | — | Pending |
-| PROT-01 | — | Pending |
-| PROT-02 | — | Pending |
-| PROT-03 | — | Pending |
-| WAYPT-01 | — | Pending |
-| WAYPT-02 | — | Pending |
-| ADMIN-01 | — | Pending |
-| ADMIN-02 | — | Pending |
-| ADMIN-03 | — | Pending |
-| ADMIN-04 | — | Pending |
-| ADMIN-05 | — | Pending |
-| ADMIN-06 | — | Pending |
+| AUTH-01 | Phase 3 | Pending |
+| AUTH-02 | Phase 3 | Pending |
+| AUTH-03 | Phase 3 | Pending |
+| AUTH-04 | Phase 3 | Pending |
+| CATA-01 | Phase 3 | Pending |
+| CATA-02 | Phase 3 | Pending |
+| CATA-03 | Phase 3 | Pending |
+| CATA-04 | Phase 3 | Pending |
+| DETL-01 | Phase 3 | Pending |
+| DETL-02 | Phase 3 | Pending |
+| DETL-03 | Phase 3 | Pending |
+| DETL-04 | Phase 3 | Pending |
+| LIC-01 | Phase 5 | Pending |
+| LIC-02 | Phase 5 | Pending |
+| LIC-03 | Phase 5 | Pending |
+| LIC-04 | Phase 5 | Pending |
+| NAV-01 | Phase 6 | Pending |
+| NAV-02 | Phase 6 | Pending |
+| NAV-03 | Phase 6 | Pending |
+| NAV-04 | Phase 6 | Pending |
+| NAV-05 | Phase 6 | Pending |
+| NAV-06 | Phase 6 | Pending |
+| PROT-01 | Phase 4 | Pending |
+| PROT-02 | Phase 4 | Pending |
+| PROT-03 | Phase 4 | Pending |
+| WAYPT-01 | Phase 6 | Pending |
+| WAYPT-02 | Phase 6 | Pending |
+| ADMIN-01 | Phase 2 | Pending |
+| ADMIN-02 | Phase 2 | Pending |
+| ADMIN-03 | Phase 2 | Pending |
+| ADMIN-04 | Phase 2 | Pending |
+| ADMIN-05 | Phase 2 | Pending |
+| ADMIN-06 | Phase 2 | Pending |
 
 **Coverage:**
 - v1 requirements: 34 total
-- Mapped to phases: 0 (pending roadmap creation)
-- Unmapped: 34 ⚠️
+- Mapped to phases: 34 (complete)
+- Unmapped: 0
+
+**Phase Distribution:**
+- Phase 1 (Backend Foundation): Infrastructure prerequisite — no standalone requirement IDs; enables all 34
+- Phase 2 (Admin Dashboard): ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04, ADMIN-05, ADMIN-06 (6 requirements)
+- Phase 3 (Android Catalog and Auth): AUTH-01, AUTH-02, AUTH-03, AUTH-04, CATA-01, CATA-02, CATA-03, CATA-04, DETL-01, DETL-02, DETL-03, DETL-04 (12 requirements)
+- Phase 4 (Android Encryption Layer): PROT-01, PROT-02, PROT-03 (3 requirements)
+- Phase 5 (License Enforcement): LIC-01, LIC-02, LIC-03, LIC-04 (4 requirements)
+- Phase 6 (Navigation Experience): NAV-01, NAV-02, NAV-03, NAV-04, NAV-05, NAV-06, WAYPT-01, WAYPT-02 (8 requirements)
+- Phase 7 (Security Hardening and Flavor Scaffold): Architectural objective per PROJECT.md (product flavor scaffold for future sport car variant)
 
 ---
 *Requirements defined: 2026-03-14*
-*Last updated: 2026-03-14 after initial definition*
+*Last updated: 2026-03-14 after roadmap creation — traceability complete*
