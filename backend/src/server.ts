@@ -21,7 +21,7 @@ async function start(): Promise<void> {
       server.log.info('Server closed gracefully');
       process.exit(0);
     } catch (err) {
-      server.log.error('Error during shutdown', err);
+      server.log.error({ err }, 'Error during shutdown');
       process.exit(1);
     }
   };
