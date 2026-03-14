@@ -2,6 +2,9 @@ import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
 import fastifyJwt from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 import fastifyMultipart from '@fastify/multipart';
+import authRoutes from './routes/auth';
+import { prisma } from './lib/prisma';
+import { redis } from './lib/redis';
 
 export async function buildApp(opts: FastifyServerOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({
@@ -22,12 +25,19 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
     },
   });
 
+  // Graceful shutdown: disconnect Prisma and Redis on SIGTERM
+  app.addHook('onClose', async () => {
+    await prisma.$disconnect();
+    await redis.quit();
+  });
+
   // Health check route
   app.get('/health', async (_request, _reply) => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
-  // Route handlers will be registered here via app.register() in subsequent plans
+  // Auth routes
+  await app.register(authRoutes, { prefix: '/api/v1/auth' });
 
   return app;
 }
