@@ -5,6 +5,8 @@ import fastifyMultipart from '@fastify/multipart';
 import authRoutes from './routes/auth';
 import { routeHandlers } from './routes/routes';
 import { adminRouteHandlers } from './routes/adminRoutes';
+import { licenseHandlers } from './routes/licenses';
+import { adminLicenseHandlers } from './routes/adminLicenses';
 import { prisma } from './lib/prisma';
 import { redis } from './lib/redis';
 
@@ -46,6 +48,12 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
 
   // Admin route management endpoints
   await app.register(adminRouteHandlers, { prefix: '/api/v1/admin/routes' });
+
+  // License check endpoint (navigation gating)
+  await app.register(licenseHandlers, { prefix: '/api/v1/licenses' });
+
+  // Admin license management endpoints
+  await app.register(adminLicenseHandlers, { prefix: '/api/v1/admin/licenses' });
 
   return app;
 }
