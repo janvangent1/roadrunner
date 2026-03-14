@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: planning
+stopped_at: Completed 01-backend-foundation-01-PLAN.md
+last_updated: "2026-03-14T21:46:04.196Z"
+last_activity: 2026-03-14 — Roadmap created; 7 phases derived from 34 v1 requirements
+progress:
+  total_phases: 7
+  completed_phases: 0
+  total_plans: 4
+  completed_plans: 1
+  percent: 25
+---
+
 # Project State
 
 ## Project Reference
@@ -10,27 +26,27 @@ See: .planning/PROJECT.md (updated 2026-03-14)
 ## Current Position
 
 Phase: 1 of 7 (Backend Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-14 — Roadmap created; 7 phases derived from 34 v1 requirements
+Plan: 1 of 4 in current phase
+Status: In progress
+Last activity: 2026-03-14 — Plan 01-01 complete: Fastify scaffold, Docker Compose, Prisma schema
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 25%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 8 min
+- Total execution time: 0.13 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-backend-foundation | 1/4 | 8 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: —
+- Last 5 plans: 01-01 (8 min)
 - Trend: —
 
 *Updated after each plan completion*
@@ -47,6 +63,9 @@ Recent decisions affecting current work:
 - Encryption: Google Tink 1.20.0 + Android Keystore (AES-256-GCM); `androidx.security:security-crypto` is deprecated Jul 2025 and must not be used
 - License validation: Server-side only; device clock must never be trusted for expiry; StrongBox used only to wrap/unwrap session key, not for bulk decryption
 - DB schema: `linked_purchase_token` and `revoked_at` columns required from day one to prevent zombie tokens
+- [Phase 01-backend-foundation]: tink-crypto npm package is v0.1.1 not 0.0.1; corrected in package.json
+- [Phase 01-backend-foundation]: Migration created manually (no Docker in dev env); must run prisma migrate deploy on first docker compose up
+- [Phase 01-backend-foundation]: buildApp() is async factory returning Promise<FastifyInstance> for plugin support and test isolation
 
 ### Pending Todos
 
@@ -60,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14
-Stopped at: Roadmap created — ROADMAP.md, STATE.md written; REQUIREMENTS.md traceability updated
+Last session: 2026-03-14T21:46:04.192Z
+Stopped at: Completed 01-backend-foundation-01-PLAN.md
 Resume file: None
