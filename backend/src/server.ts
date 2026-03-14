@@ -1,6 +1,10 @@
 import { buildApp } from './app';
+import { initTink } from './lib/tink';
 
 async function start(): Promise<void> {
+  // Initialize Tink before starting the server — required for GPX encryption
+  await initTink();
+
   const server = await buildApp();
 
   const port = parseInt(process.env.PORT || '3000', 10);
