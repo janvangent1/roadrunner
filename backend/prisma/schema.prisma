@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  HARD
+  EXPERT
+}
+
+enum WaypointType {
+  FUEL
+  WATER
+  CAUTION
+  INFO
+}
+
+enum LicenseType {
+  DAY_PASS
+  MULTI_DAY
+  PERMANENT
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String?        @map("password_hash")
+  googleId      String?        @unique @map("google_id")
+  role          Role           @default(USER)
+  refreshTokens RefreshToken[]
+  licenses      License[]
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime  @map("expires_at")
+  revokedAt DateTime? @map("revoked_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("refresh_tokens")
+}
+
+model Route {
+  id                       String     @id @default(uuid())
+  title                    String
+  description              String?
+  difficulty               Difficulty
+  terrainType              String     @map("terrain_type")
+  region                   String
+  estimatedDurationMinutes Int        @map("estimated_duration_minutes")
+  distanceKm               Decimal    @map("distance_km") @db.Decimal(8, 2)
+  published                Boolean    @default(false)
+  gpxEncrypted             Bytes?     @map("gpx_encrypted")
+  waypoints                Waypoint[]
+  licenses                 License[]
+  createdAt                DateTime   @default(now()) @map("created_at")
+  updatedAt                DateTime   @updatedAt @map("updated_at")
+
+  @@map("routes")
+}
+
+model Waypoint {
+  id        String       @id @default(uuid())
+  routeId   String       @map("route_id")
+  route     Route        @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  label     String
+  latitude  Decimal      @db.Decimal(10, 7)
+  longitude Decimal      @db.Decimal(10, 7)
+  type      WaypointType
+  sortOrder Int          @map("sort_order")
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  @@map("waypoints")
+}
+
+model License {
+  id                  String      @id @default(uuid())
+  userId              String      @map("user_id")
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  routeId             String      @map("route_id")
+  route               Route       @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  type                LicenseType
+  expiresAt           DateTime?   @map("expires_at")
+  revokedAt           DateTime?   @map("revoked_at")
+  linkedPurchaseToken String?     @map("linked_purchase_token")
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
+
+  @@index([userId, routeId])
+  @@map("licenses")
+}
