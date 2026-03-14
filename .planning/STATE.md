@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-admin-dashboard-01-PLAN.md
-last_updated: "2026-03-14T22:18:30.793Z"
+stopped_at: Completed 02-admin-dashboard-02-PLAN.md
+last_updated: "2026-03-14T22:21:54.280Z"
 last_activity: "2026-03-14 — Plan 01-02 complete: Auth subsystem (register/login/google/refresh/logout), JWT middleware"
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 9
-  completed_plans: 5
+  completed_plans: 6
   percent: 50
 ---
 
@@ -53,6 +53,7 @@ Progress: [█████░░░░░] 50%
 | Phase 01-backend-foundation P03 | 6 | 2 tasks | 6 files |
 | Phase 01-backend-foundation P04 | 2 | 2 tasks | 3 files |
 | Phase 02-admin-dashboard P01 | 3 | 2 tasks | 14 files |
+| Phase 02-admin-dashboard P02 | 2 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,7 @@ Recent decisions affecting current work:
 - [Phase 01-backend-foundation]: Negative license results also cached for 60s TTL to prevent DB hammering on invalid repeated checks
 - [Phase 02-admin-dashboard]: GET /admin/routes excludes gpxEncrypted from select; PUT /:id/waypoints uses prisma transaction for atomic replacement
 - [Phase 02-admin-dashboard]: Next.js output set to standalone for minimal Docker image on Raspberry Pi
+- [Phase 02-admin-dashboard]: Auth guard is client-side only (useEffect in AdminLayout) because JWT lives in localStorage, not cookies; middleware cannot inspect it
 
 ### Pending Todos
 
@@ -93,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:18:30.789Z
-Stopped at: Completed 02-admin-dashboard-01-PLAN.md
+Last session: 2026-03-14T22:21:54.276Z
+Stopped at: Completed 02-admin-dashboard-02-PLAN.md
 Resume file: None
