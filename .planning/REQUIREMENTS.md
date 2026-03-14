@@ -57,8 +57,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Admin Dashboard
 
-- [ ] **ADMIN-01**: Admin can upload a GPX file and fill in route metadata (title, description, difficulty, terrain type, region, estimated duration)
-- [ ] **ADMIN-02**: Admin can add waypoints/POIs to a route (label, coordinates, type)
+- [x] **ADMIN-01**: Admin can upload a GPX file and fill in route metadata (title, description, difficulty, terrain type, region, estimated duration)
+- [x] **ADMIN-02**: Admin can add waypoints/POIs to a route (label, coordinates, type)
 - [ ] **ADMIN-03**: Admin can manually grant a license to a user account (by email) for a specific route, selecting license type: day pass (with date), multi-day rental (with expiry date), or permanent
 - [ ] **ADMIN-04**: Admin can revoke or modify an existing license grant
 - [ ] **ADMIN-05**: Admin can publish, unpublish, edit, and delete routes from the catalog
@@ -143,8 +143,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROT-03 | Phase 4 | Pending |
 | WAYPT-01 | Phase 6 | Pending |
 | WAYPT-02 | Phase 6 | Pending |
-| ADMIN-01 | Phase 2 | Pending |
-| ADMIN-02 | Phase 2 | Pending |
+| ADMIN-01 | Phase 2 | Complete |
+| ADMIN-02 | Phase 2 | Complete |
 | ADMIN-03 | Phase 2 | Pending |
 | ADMIN-04 | Phase 2 | Pending |
 | ADMIN-05 | Phase 2 | Pending |
