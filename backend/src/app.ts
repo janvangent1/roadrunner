@@ -3,6 +3,8 @@ import fastifyJwt from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 import fastifyMultipart from '@fastify/multipart';
 import authRoutes from './routes/auth';
+import { routeHandlers } from './routes/routes';
+import { adminRouteHandlers } from './routes/adminRoutes';
 import { prisma } from './lib/prisma';
 import { redis } from './lib/redis';
 
@@ -38,6 +40,12 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
 
   // Auth routes
   await app.register(authRoutes, { prefix: '/api/v1/auth' });
+
+  // Route catalog and GPX endpoints
+  await app.register(routeHandlers, { prefix: '/api/v1/routes' });
+
+  // Admin route management endpoints
+  await app.register(adminRouteHandlers, { prefix: '/api/v1/admin/routes' });
 
   return app;
 }
