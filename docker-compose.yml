@@ -46,6 +46,19 @@ services:
       - ./backend/prisma:/app/prisma
     restart: unless-stopped
 
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      NEXT_PUBLIC_API_URL: http://api:3000/api/v1
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   redis_data:
