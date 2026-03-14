@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-backend-foundation-03-PLAN.md
-last_updated: "2026-03-14T21:57:11.434Z"
+stopped_at: Completed 01-backend-foundation-04-PLAN.md
+last_updated: "2026-03-14T22:00:37.748Z"
 last_activity: "2026-03-14 — Plan 01-02 complete: Auth subsystem (register/login/google/refresh/logout), JWT middleware"
 progress:
   total_phases: 7
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 50
 ---
 
@@ -51,6 +51,7 @@ Progress: [█████░░░░░] 50%
 
 *Updated after each plan completion*
 | Phase 01-backend-foundation P03 | 6 | 2 tasks | 6 files |
+| Phase 01-backend-foundation P04 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Recent decisions affecting current work:
 - [Phase 01-backend-foundation]: tink-crypto actual API uses binaryInsecure.deserializeKeyset + getPrimitive(Aead) — not plan pseudocode; TINK_KEYSET_JSON stores base64-encoded binary keyset
 - [Phase 01-backend-foundation]: Route ID used as Tink AAD for encryption — Plan 04 must use same routeId AAD when decrypting GPX
 - [Phase 01-backend-foundation]: POST /admin/routes generates UUID before encrypt so it can be used as AAD, then passes that UUID as id to prisma.route.create
+- [Phase 01-backend-foundation]: JWT sign uses 'as any' cast to bypass strict payload type — navigation session payload is correct at runtime
+- [Phase 01-backend-foundation]: Negative license results also cached for 60s TTL to prevent DB hammering on invalid repeated checks
 
 ### Pending Todos
 
@@ -87,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T21:57:11.430Z
-Stopped at: Completed 01-backend-foundation-03-PLAN.md
+Last session: 2026-03-14T22:00:37.744Z
+Stopped at: Completed 01-backend-foundation-04-PLAN.md
 Resume file: None
