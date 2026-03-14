@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 01-backend-foundation-01-PLAN.md
-last_updated: "2026-03-14T21:46:04.196Z"
-last_activity: 2026-03-14 — Roadmap created; 7 phases derived from 34 v1 requirements
+status: executing
+stopped_at: Completed 01-backend-foundation-02-PLAN.md
+last_updated: "2026-03-14T21:51:08.340Z"
+last_activity: "2026-03-14 — Plan 01-01 complete: Fastify scaffold, Docker Compose, Prisma schema"
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 4
-  completed_plans: 1
+  completed_plans: 2
   percent: 25
 ---
 
@@ -26,28 +26,28 @@ See: .planning/PROJECT.md (updated 2026-03-14)
 ## Current Position
 
 Phase: 1 of 7 (Backend Foundation)
-Plan: 1 of 4 in current phase
+Plan: 2 of 4 in current phase
 Status: In progress
-Last activity: 2026-03-14 — Plan 01-01 complete: Fastify scaffold, Docker Compose, Prisma schema
+Last activity: 2026-03-14 — Plan 01-02 complete: Auth subsystem (register/login/google/refresh/logout), JWT middleware
 
-Progress: [███░░░░░░░] 25%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 8 min
-- Total execution time: 0.13 hours
+- Total plans completed: 2
+- Average duration: 5.5 min
+- Total execution time: 0.18 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-backend-foundation | 1/4 | 8 min | 8 min |
+| 01-backend-foundation | 2/4 | 11 min | 5.5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (8 min)
-- Trend: —
+- Last 5 plans: 01-01 (8 min), 01-02 (3 min)
+- Trend: Fast
 
 *Updated after each plan completion*
 
@@ -66,6 +66,10 @@ Recent decisions affecting current work:
 - [Phase 01-backend-foundation]: tink-crypto npm package is v0.1.1 not 0.0.1; corrected in package.json
 - [Phase 01-backend-foundation]: Migration created manually (no Docker in dev env); must run prisma migrate deploy on first docker compose up
 - [Phase 01-backend-foundation]: buildApp() is async factory returning Promise<FastifyInstance> for plugin support and test isolation
+- [Phase 01-backend-foundation]: Refresh token stored as bcrypt hash in DB; raw UUID returned to client; bcrypt.compare scanning used for match
+- [Phase 01-backend-foundation]: fastify-plugin wraps authRoutes to prevent scope encapsulation and expose JWT decorator to child plugins
+- [Phase 01-backend-foundation]: Google Sign-In upsert: find by googleId, then by email (link), then create new user
+- [Phase 01-backend-foundation]: app.addHook('onClose') used for Prisma/Redis disconnect instead of SIGTERM in app.ts
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T21:46:04.192Z
-Stopped at: Completed 01-backend-foundation-01-PLAN.md
+Last session: 2026-03-14T21:51:08.336Z
+Stopped at: Completed 01-backend-foundation-02-PLAN.md
 Resume file: None
