@@ -321,6 +321,113 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
 
     return reply.code(204).send();
   });
+
+  /**
+   * GET /api/v1/admin/routes
+   * List all routes for admin (includes unpublished).
+   * Optional query param: published=true|false to filter by published status.
+   */
+  fastify.get('/', {
+    preHandler: [requireAuth, requireAdmin],
+  }, async (request, reply) => {
+    const query = request.query as Record<string, string | undefined>;
+    let publishedFilter: boolean | undefined;
+    if (query['published'] === 'true') {
+      publishedFilter = true;
+    } else if (query['published'] === 'false') {
+      publishedFilter = false;
+    }
+
+    const routes = await prisma.route.findMany({
+      where: {
+        ...(publishedFilter !== undefined ? { published: publishedFilter } : {}),
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        difficulty: true,
+        terrainType: true,
+        region: true,
+        estimatedDurationMinutes: true,
+        distanceKm: true,
+        published: true,
+        createdAt: true,
+        updatedAt: true,
+        // gpxEncrypted intentionally excluded
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return reply.send(
+      routes.map((r) => ({ ...r, distanceKm: Number(r.distanceKm) }))
+    );
+  });
+
+  /**
+   * PUT /api/v1/admin/routes/:id/waypoints
+   * Replace all waypoints for a route in a single transaction.
+   * Body: { waypoints: Array<{ label, latitude, longitude, type, sortOrder }> }
+   */
+  fastify.put<{ Params: { id: string } }>('/:id/waypoints', {
+    preHandler: [requireAuth, requireAdmin],
+  }, async (request, reply) => {
+    const { id } = request.params;
+
+    const existing = await prisma.route.findUnique({ where: { id } });
+    if (!existing) {
+      return reply.code(404).send({ error: 'Route not found' });
+    }
+
+    const body = request.body as {
+      waypoints: Array<{
+        label: string;
+        latitude: number;
+        longitude: number;
+        type: string;
+        sortOrder: number;
+      }>;
+    };
+
+    if (!Array.isArray(body?.waypoints)) {
+      return reply.code(400).send({ error: 'Body must contain a waypoints array' });
+    }
+
+    for (const wp of body.waypoints) {
+      if (!VALID_WAYPOINT_TYPES.includes(wp.type)) {
+        return reply.code(400).send({
+          error: `Invalid waypoint type "${wp.type}". Must be one of: ${VALID_WAYPOINT_TYPES.join(', ')}`,
+        });
+      }
+    }
+
+    await prisma.$transaction([
+      prisma.waypoint.deleteMany({ where: { routeId: id } }),
+      prisma.waypoint.createMany({
+        data: body.waypoints.map((w) => ({
+          routeId: id,
+          label: w.label,
+          latitude: w.latitude,
+          longitude: w.longitude,
+          type: w.type as WaypointType,
+          sortOrder: w.sortOrder,
+        })),
+      }),
+    ]);
+
+    const waypoints = await prisma.waypoint.findMany({
+      where: { routeId: id },
+      orderBy: { sortOrder: 'asc' },
+    });
+
+    return reply.send(
+      waypoints.map((w) => ({
+        ...w,
+        latitude: Number(w.latitude),
+        longitude: Number(w.longitude),
+      }))
+    );
+  });
 }
 
 export const adminRouteHandlers = fp(adminRouteHandlersPlugin);
