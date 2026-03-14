@@ -32,7 +32,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `GET /routes/:id/gpx` returns the encrypted GPX blob to an authenticated client
   4. The PostgreSQL schema includes user, route, license, and purchase_token tables with `linked_purchase_token` and `revoked_at` columns
   5. Redis is connected and the license cache layer responds to GET/SET operations
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Project scaffold, Docker Compose, and Prisma schema (all four tables)
+- [ ] 01-02-PLAN.md — Auth endpoints (register, login, google, refresh, logout) and JWT middleware
+- [ ] 01-03-PLAN.md — Route endpoints and Tink AES-256-GCM GPX encryption pipeline
+- [ ] 01-04-PLAN.md — Admin license management and license check with Redis cache
 
 ### Phase 2: Admin Dashboard
 **Goal**: The admin can upload GPX routes with full metadata, manage the catalog, and manually grant or revoke licenses — the catalog is populated and ready for real Android testing.
@@ -113,7 +119,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Backend Foundation | 0/? | Not started | - |
+| 1. Backend Foundation | 0/4 | Not started | - |
 | 2. Admin Dashboard | 0/? | Not started | - |
 | 3. Android Catalog and Auth | 0/? | Not started | - |
 | 4. Android Encryption Layer | 0/? | Not started | - |
