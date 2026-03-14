@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-backend-foundation-02-PLAN.md
-last_updated: "2026-03-14T21:51:08.340Z"
-last_activity: "2026-03-14 — Plan 01-01 complete: Fastify scaffold, Docker Compose, Prisma schema"
+stopped_at: Completed 01-backend-foundation-03-PLAN.md
+last_updated: "2026-03-14T21:57:11.434Z"
+last_activity: "2026-03-14 — Plan 01-02 complete: Auth subsystem (register/login/google/refresh/logout), JWT middleware"
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
-  percent: 25
+  completed_plans: 3
+  percent: 50
 ---
 
 # Project State
@@ -50,6 +50,7 @@ Progress: [█████░░░░░] 50%
 - Trend: Fast
 
 *Updated after each plan completion*
+| Phase 01-backend-foundation P03 | 6 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - [Phase 01-backend-foundation]: fastify-plugin wraps authRoutes to prevent scope encapsulation and expose JWT decorator to child plugins
 - [Phase 01-backend-foundation]: Google Sign-In upsert: find by googleId, then by email (link), then create new user
 - [Phase 01-backend-foundation]: app.addHook('onClose') used for Prisma/Redis disconnect instead of SIGTERM in app.ts
+- [Phase 01-backend-foundation]: tink-crypto actual API uses binaryInsecure.deserializeKeyset + getPrimitive(Aead) — not plan pseudocode; TINK_KEYSET_JSON stores base64-encoded binary keyset
+- [Phase 01-backend-foundation]: Route ID used as Tink AAD for encryption — Plan 04 must use same routeId AAD when decrypting GPX
+- [Phase 01-backend-foundation]: POST /admin/routes generates UUID before encrypt so it can be used as AAD, then passes that UUID as id to prisma.route.create
 
 ### Pending Todos
 
@@ -83,6 +87,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T21:51:08.336Z
-Stopped at: Completed 01-backend-foundation-02-PLAN.md
+Last session: 2026-03-14T21:57:11.430Z
+Stopped at: Completed 01-backend-foundation-03-PLAN.md
 Resume file: None
