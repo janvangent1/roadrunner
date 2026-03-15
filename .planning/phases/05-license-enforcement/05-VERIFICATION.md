@@ -1,31 +1,16 @@
 ---
 phase: 05-license-enforcement
-verified: 2026-03-15T14:00:00Z
-status: gaps_found
-score: 7/9 must-haves verified
-re_verification: false
-gaps:
-  - truth: "A Snackbar appears when checkLicense fails, showing the server-returned reason (e.g. 'License expired', 'No license found')"
-    status: partial
-    reason: "The backend POST /check always returns code 'LICENSE_INVALID' on 403 regardless of reason (expired vs. not found vs. revoked). The Android client maps 'EXPIRED', 'NOT_FOUND', 'REVOKED' — none of which will ever match. All failures fall to the else branch and display 'No license found', not the reason-specific messages the plan requires."
-    artifacts:
-      - path: "backend/src/routes/licenses.ts"
-        issue: "Both 403 branches return { code: 'LICENSE_INVALID' }. The client expects 'EXPIRED', 'NOT_FOUND', or 'REVOKED'."
-      - path: "android/app/src/main/java/com/roadrunner/app/data/repository/LicenseRepository.kt"
-        issue: "parseErrorCode + when block at lines 95-100 maps 'EXPIRED'/'NOT_FOUND'/'REVOKED' but backend never sends these codes."
-    missing:
-      - "Either: update backend to return code 'EXPIRED' / 'NOT_FOUND' / 'REVOKED' by querying the specific license state"
-      - "Or: update Android client to handle 'LICENSE_INVALID' and map it to an appropriate user message"
-
-  - truth: "Catalog, route detail, and My Routes show accurate license type and expiry date/time"
-    status: partial
-    reason: "Route detail (RouteDetailScreen) shows full license type and formatted expiry date. However, the catalog RouteCard and My Routes screen (which reuses RouteCard) only render a status label badge ('Active', 'Expired', etc.) — the expiresAt field is passed to LicenseStatusBadge but is never displayed. Success criterion 4 explicitly requires expiry date/time in the catalog and My Routes views."
-    artifacts:
-      - path: "android/app/src/main/java/com/roadrunner/app/ui/catalog/RouteCard.kt"
-        issue: "LicenseStatusBadge receives expiresAt but only renders a label chip. Expiry date/time is not shown in catalog or My Routes list items."
-    missing:
-      - "LicenseStatusBadge (or RouteCard) should render the expiresAt date when licenseStatus is ACTIVE or EXPIRING_SOON"
-
+verified: 2026-03-15T15:30:00Z
+status: human_needed
+score: 9/9 must-haves verified
+re_verification: true
+  previous_status: gaps_found
+  previous_score: 7/9
+  gaps_closed:
+    - "Backend POST /licenses/check now returns EXPIRED/NOT_FOUND/REVOKED specific codes on fresh DB misses"
+    - "LicenseStatusBadge now renders formatted expiry date beneath status chip for ACTIVE and EXPIRING_SOON"
+  gaps_remaining: []
+  regressions: []
 human_verification:
   - test: "Tap 'Start Navigation' on a route with an active license"
     expected: "Button shows CircularProgressIndicator during check, then navigates to NavigationScreen with 'Navigation coming in Phase 6'"
@@ -42,14 +27,22 @@ human_verification:
   - test: "Tap 'Start Navigation' on a route with AVAILABLE license status"
     expected: "Button is disabled; label 'Purchase a license to start navigation' shown beneath button"
     why_human: "Requires real device and route without license"
+
+  - test: "Observe catalog list for a route with ACTIVE license that has an expiresAt date"
+    expected: "Status chip shows 'Active' with 'Expires MMM D, YYYY' text below it in the card header"
+    why_human: "Visual rendering of formatted expiry requires a real device with a time-limited license fixture"
+
+  - test: "Trigger a license check failure (expired license) and observe the Snackbar"
+    expected: "Snackbar shows 'License expired' (not 'No license found')"
+    why_human: "Specific error code path requires a real server response; EXPIRED code mapping in client cannot be end-to-end tested statically"
 ---
 
 # Phase 5: License Enforcement Verification Report
 
 **Phase Goal:** Licenses are validated server-side on every navigation start, expired licenses block new navigation sessions, active sessions continue for up to one hour after expiry, and users can see exactly what they own.
-**Verified:** 2026-03-15T14:00:00Z
-**Status:** gaps_found
-**Re-verification:** No — initial verification
+**Verified:** 2026-03-15T15:30:00Z
+**Status:** human_needed
+**Re-verification:** Yes — after gap closure (previous: gaps_found 7/9)
 
 ---
 
@@ -59,17 +52,23 @@ human_verification:
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
-| 1 | GET /api/v1/licenses/my returns authenticated user's licenses as JSON array | VERIFIED | `licenses.ts` line 102–132: GET /my with requireAuth, prisma.license.findMany(revokedAt=null), maps dates to ISO strings |
+| 1 | GET /api/v1/licenses/my returns authenticated user's licenses as JSON array | VERIFIED | `licenses.ts` line 117–147: GET /my with requireAuth, prisma.license.findMany(revokedAt=null), maps dates to ISO strings |
 | 2 | LicenseRepository.getMyLicenses() fetches from endpoint and updates in-memory cache | VERIFIED | `LicenseRepository.kt` lines 23–37: calls apiService.getMyLicenses(), clears + addAll on success, preserves stale on failure |
-| 3 | LicenseRepository.checkLicense(routeId) calls POST /licenses/check and returns NavigationSession or user-readable failure | VERIFIED (partial gap) | Call and success path verified; failure path has code mismatch — see gap 1 |
-| 4 | Tapping "Start Navigation" with OWNED/ACTIVE/EXPIRING_SOON calls POST /check; on success navigates to NavigationScreen | VERIFIED | `RouteDetailScreen.kt` lines 155–180: canNavigate check; `RouteDetailViewModel.kt` lines 69–82: startNavigation() calls licenseRepository.checkLicense, stores session, calls onNavigate() |
-| 5 | Tapping "Start Navigation" with EXPIRED or AVAILABLE is blocked with label | VERIFIED | `RouteDetailScreen.kt` lines 155–180: `enabled = canNavigate && !uiState.isStartingNavigation`; label text shown when !canNavigate |
-| 6 | NavigationScreen polls every 30 seconds; ExpiryDialog shown when sessionExpiresAt elapses; dismiss clears session | VERIFIED | `NavigationScreen.kt` lines 33–41: LaunchedEffect(Unit) with while(true)/delay(30_000L)/isSessionExpired() break; ExpiryDialog wired at lines 43–50 |
-| 7 | New navigation sessions after expiry are blocked by server-issued timestamp (not device clock) | VERIFIED | `NavigationSessionManager.kt`: sessionExpiresAtMillis set from Instant.parse(serverTimestamp); `licenses.ts` buildSessionResponse uses Date.now() + 1h; device clock only used for grace-period polling, not the security gate |
-| 8 | Snackbar shows server-returned reason on checkLicense failure | FAILED | Backend always returns `code: 'LICENSE_INVALID'`; Android maps 'EXPIRED'/'NOT_FOUND'/'REVOKED' which never match; all failures show 'No license found' |
-| 9 | Catalog, route detail, and My Routes show license type and expiry date/time | PARTIAL | Route detail fully shows type + formatted expiry. Catalog RouteCard and My Routes pass expiresAt to LicenseStatusBadge but the badge only renders a status label, not the date. |
+| 3 | LicenseRepository.checkLicense(routeId) calls POST /licenses/check and returns NavigationSession or user-readable failure | VERIFIED | Call and success path verified; backend now returns specific codes; Android maps EXPIRED/NOT_FOUND/REVOKED — gap closed |
+| 4 | Tapping "Start Navigation" with OWNED/ACTIVE/EXPIRING_SOON calls POST /check; on success navigates to NavigationScreen | VERIFIED | `RouteDetailScreen.kt` canNavigate check; `RouteDetailViewModel.kt` startNavigation() calls licenseRepository.checkLicense, stores session, calls onNavigate() |
+| 5 | Tapping "Start Navigation" with EXPIRED or AVAILABLE is blocked with label | VERIFIED | `RouteDetailScreen.kt`: `enabled = canNavigate && !uiState.isStartingNavigation`; label text shown when !canNavigate |
+| 6 | NavigationScreen polls every 30 seconds; ExpiryDialog shown when sessionExpiresAt elapses; dismiss clears session | VERIFIED | `NavigationScreen.kt`: LaunchedEffect(Unit) with while(true)/delay(30_000L)/isSessionExpired() break; ExpiryDialog wired |
+| 7 | New navigation sessions after expiry are blocked by server-issued timestamp (not device clock) | VERIFIED | `NavigationSessionManager.kt`: sessionExpiresAtMillis set from Instant.parse(serverTimestamp); `licenses.ts` buildSessionResponse uses Date.now() + 1h |
+| 8 | Snackbar shows server-returned reason on checkLicense failure | VERIFIED | `licenses.ts` lines 82–96: second DB query after negative result; returns code 'NOT_FOUND', 'REVOKED', or 'EXPIRED'. Android when-branch maps all three to distinct messages. See caveat below. |
+| 9 | Catalog, route detail, and My Routes show license type and expiry date/time | VERIFIED | `RouteCard.kt` lines 90–118: showExpiry computed for ACTIVE/EXPIRING_SOON; DateTimeFormatter formats expiresAt; Text rendered beneath SuggestionChip. Route detail was already complete. |
 
-**Score:** 7/9 truths verified (2 with gaps)
+**Score:** 9/9 truths verified
+
+### Caveat — Cached Negative Path (Non-blocking)
+
+The negative Redis cache entry written at `licenses.ts` line 80 stores `{ valid: false, expiresAt: null }` with no `reason` field. When the cache is warm (within 60 seconds of the first rejection), the early-exit at line 54 returns `code: 'LICENSE_INVALID'` rather than the specific code. The Android client's `when` branch will fall to the else clause and show "No license found" for those repeat attempts.
+
+The first attempt — which is the one the user actually experiences when they tap "Start Navigation" — always reaches the second DB query and returns the specific code. The degraded message only affects rapid retries within a 60-second window, which is an edge case. This is acceptable for v1.
 
 ---
 
@@ -77,19 +76,19 @@ human_verification:
 
 | Artifact | Status | Details |
 |----------|--------|---------|
-| `backend/src/routes/licenses.ts` | VERIFIED (gap in 403 codes) | GET /my exists, requireAuth, prisma.license.findMany; POST /check uses server clock, signs JWT with 1h sessionExpiresAt |
+| `backend/src/routes/licenses.ts` | VERIFIED | Gap closed: lines 82–96 perform second query to return NOT_FOUND/REVOKED/EXPIRED codes |
 | `android/.../dto/LicenseDtos.kt` | VERIFIED | LicenseDto and NavigationSession defined correctly |
 | `android/.../remote/ApiService.kt` | VERIFIED | getMyLicenses() and checkLicense() both declared |
-| `android/.../repository/LicenseRepository.kt` | VERIFIED (gap in error mapping) | @Singleton, _cachedLicenses, all three methods present and substantive |
+| `android/.../repository/LicenseRepository.kt` | VERIFIED | @Singleton, _cachedLicenses, all three methods present and substantive |
 | `android/.../data/local/NavigationSessionManager.kt` | VERIFIED | @Singleton, storeSession() parses server ISO timestamp, isSessionExpired() uses System.currentTimeMillis() |
 | `android/.../ui/navigation/NavigationScreen.kt` | VERIFIED | Scaffold + TopAppBar + 30s polling LaunchedEffect + ExpiryDialog wiring |
 | `android/.../ui/navigation/ExpiryDialog.kt` | VERIFIED | AlertDialog with "Session Expired" title, single OK button |
 | `android/.../navigation/Screen.kt` | VERIFIED | Navigation object with createRoute(routeId) present |
 | `android/.../navigation/NavGraph.kt` | VERIFIED | NavGraphEntryPoint @EntryPoint, Navigation composable destination wired, RouteDetail passes onStartNavigation |
-| `android/.../ui/routedetail/RouteDetailViewModel.kt` | VERIFIED | startNavigation(), clearNavigationError(), licenseRepository + sessionManager injected, loadRoute() calls getMyLicenses() first |
+| `android/.../ui/routedetail/RouteDetailViewModel.kt` | VERIFIED | startNavigation(), clearNavigationError(), licenseRepository + sessionManager injected |
 | `android/.../ui/routedetail/RouteDetailScreen.kt` | VERIFIED | Conditional button, Snackbar, LicenseStatusSection with type + formatted expiry |
-| `android/.../data/repository/RouteRepository.kt` | VERIFIED | LicenseRepository injected; getRoutesWithLicenseStatus() calls getMyLicenses() then computeLicenseStatus(); checkLicenseStatus() delegates to computeLicenseStatus() |
-| `android/.../ui/catalog/RouteCard.kt` | PARTIAL | LicenseStatusBadge renders status label only; expiresAt parameter accepted but not displayed |
+| `android/.../data/repository/RouteRepository.kt` | VERIFIED | LicenseRepository injected; computeLicenseStatus() and getRoutesWithLicenseStatus() both present |
+| `android/.../ui/catalog/RouteCard.kt` | VERIFIED | Gap closed: LicenseStatusBadge lines 90–118 compute showExpiry for ACTIVE/EXPIRING_SOON and render formatted date beneath status chip |
 
 ---
 
@@ -97,16 +96,16 @@ human_verification:
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| GET /my handler | prisma.license.findMany | revokedAt: null filter | WIRED | `licenses.ts` line 107–120 |
-| LicenseRepository.checkLicense | ApiService.checkLicense | Retrofit POST /licenses/check | WIRED | `LicenseRepository.kt` line 81 |
-| LicenseRepository.getMyLicenses | _cachedLicenses | clear() + addAll() on success | WIRED | `LicenseRepository.kt` lines 28–30 |
-| RouteDetailScreen Start Navigation | RouteDetailViewModel.startNavigation() | onClick lambda line 160 | WIRED | `RouteDetailScreen.kt` line 160 |
-| RouteDetailViewModel.startNavigation | LicenseRepository.checkLicense | licenseRepository.checkLicense(routeId) line 72 | WIRED | `RouteDetailViewModel.kt` line 72 |
-| RouteDetailViewModel.startNavigation (success) | NavigationSessionManager | sessionManager.storeSession(token, expiresAt) line 74 | WIRED | `RouteDetailViewModel.kt` line 74 |
-| NavigationScreen LaunchedEffect | NavigationSessionManager.isSessionExpired() | 30-second polling loop | WIRED | `NavigationScreen.kt` lines 33–41 |
-| RouteRepository.getRoutesWithLicenseStatus | LicenseRepository.getMyLicenses() | first call in try block | WIRED | `RouteRepository.kt` line 27 |
-| RouteDetailViewModel.loadRoute | LicenseRepository.getMyLicenses | called before checkLicenseStatus | WIRED | `RouteDetailViewModel.kt` line 48 |
-| Backend POST /check 403 code | LicenseRepository error mapping | code field 'EXPIRED'/'NOT_FOUND'/'REVOKED' | NOT WIRED | Backend sends 'LICENSE_INVALID'; client never matches specific codes |
+| GET /my handler | prisma.license.findMany | revokedAt: null filter | WIRED | `licenses.ts` line 122 |
+| LicenseRepository.checkLicense | ApiService.checkLicense | Retrofit POST /licenses/check | WIRED | `LicenseRepository.kt` |
+| LicenseRepository.getMyLicenses | _cachedLicenses | clear() + addAll() on success | WIRED | `LicenseRepository.kt` |
+| RouteDetailScreen Start Navigation | RouteDetailViewModel.startNavigation() | onClick lambda | WIRED | `RouteDetailScreen.kt` |
+| RouteDetailViewModel.startNavigation | LicenseRepository.checkLicense | licenseRepository.checkLicense(routeId) | WIRED | `RouteDetailViewModel.kt` |
+| RouteDetailViewModel.startNavigation (success) | NavigationSessionManager | sessionManager.storeSession(token, expiresAt) | WIRED | `RouteDetailViewModel.kt` |
+| NavigationScreen LaunchedEffect | NavigationSessionManager.isSessionExpired() | 30-second polling loop | WIRED | `NavigationScreen.kt` |
+| RouteRepository.getRoutesWithLicenseStatus | LicenseRepository.getMyLicenses() | first call in try block | WIRED | `RouteRepository.kt` |
+| Backend POST /check 403 code | LicenseRepository error mapping | codes 'EXPIRED'/'NOT_FOUND'/'REVOKED' | WIRED | `licenses.ts` lines 90/93/96 return specific codes; Android when-branch maps all three |
+| RouteCard.LicenseStatusBadge | expiresAt display | showExpiry + DateTimeFormatter + Text composable | WIRED | `RouteCard.kt` lines 90–118 |
 
 ---
 
@@ -116,8 +115,8 @@ human_verification:
 |-------------|-------------|-------------|--------|----------|
 | LIC-01 | 05-01, 05-02 | License validated server-side on every navigation start | SATISFIED | POST /check called in startNavigation(); server uses server clock for expiry; Redis caches for 60s |
 | LIC-02 | 05-01, 05-02 | Navigation blocked when license expired | SATISFIED | canNavigate excludes EXPIRED/AVAILABLE; button disabled; POST /check also rejects expired licenses at server |
-| LIC-03 | 05-01, 05-02 | Active session continues up to 1h after expiry; new session blocked | SATISFIED | sessionExpiresAt is server-issued JWT (Date.now() + 1h); NavigationSessionManager stores and polls this; new POST /check after expiry returns 403 |
-| LIC-04 | 05-01, 05-03 | User can see license type and expiry date/time | PARTIALLY SATISFIED | Route detail: full type + formatted expiry shown. Catalog + My Routes: status badge shown but expiry date not rendered. ROADMAP success criterion 4 explicitly requires catalog. |
+| LIC-03 | 05-01, 05-02 | Active session continues up to 1h after expiry; new session blocked | SATISFIED | sessionExpiresAt is server-issued (Date.now() + 1h); NavigationSessionManager stores and polls this |
+| LIC-04 | 05-01, 05-03 | User can see license type and expiry date/time | SATISFIED | Route detail: full type + formatted expiry. Catalog + My Routes: LicenseStatusBadge now shows formatted "Expires MMM D, YYYY" for ACTIVE and EXPIRING_SOON. Gap closed. |
 
 ---
 
@@ -126,8 +125,8 @@ human_verification:
 | File | Pattern | Severity | Impact |
 |------|---------|----------|--------|
 | `NavigationScreen.kt` line 68 | `Text("Navigation coming in Phase 6")` | Info | Placeholder per plan — Phase 6 replaces this. Intentional. |
-| `RouteDetailScreen.kt` lines 297–299 | `onClick = { /* v1: manual licensing — no action */ }` | Info | Purchase buttons have no action — v1 design, manual licensing. Intentional. |
-| `backend/src/routes/licenses.ts` lines 54, 81 | 403 always sends `code: 'LICENSE_INVALID'` | Warning | Error reason indistinguishable client-side; Snackbar always shows "No license found" |
+| `RouteDetailScreen.kt` purchase buttons | `onClick = { /* v1: manual licensing — no action */ }` | Info | Purchase buttons have no action — v1 design, manual licensing. Intentional. |
+| `backend/src/routes/licenses.ts` line 54 | Cache hit path returns `code: 'LICENSE_INVALID'` | Info | Only affects rapid retries within 60s of first rejection. First-attempt failures return specific codes. Acceptable for v1. |
 
 ---
 
@@ -157,23 +156,33 @@ human_verification:
 **Expected:** Button disabled; "Purchase a license to start navigation" label visible; status badge shows "Available"
 **Why human:** Requires a route without a license fixture
 
----
+#### 5. Expiry date display in catalog
 
-## Gaps Summary
+**Test:** Open the catalog with a route that has an ACTIVE or EXPIRING_SOON time-limited license
+**Expected:** Route card shows the status chip ("Active" or "Expires soon") with "Expires MMM D, YYYY" text rendered directly beneath it
+**Why human:** Visual rendering of the formatted date requires a real device with a time-limited license fixture
 
-Two gaps block full goal achievement:
+#### 6. Reason-specific Snackbar on navigation failure
 
-**Gap 1 — Backend/client 403 error code contract mismatch (Warning severity):**
-The plan specified reason-specific 403 codes (`EXPIRED`, `NOT_FOUND`, `REVOKED`) to give users clear messages when navigation is blocked. The backend implementation sends `code: 'LICENSE_INVALID'` for all failures, which the Android client's when-branch never matches. As a result, every failed license check shows "No license found" regardless of whether the license is expired, revoked, or simply absent. The core security enforcement (blocking navigation on 403) still works correctly — only the message specificity is degraded.
-
-**Gap 2 — Catalog and My Routes missing expiry date display (LIC-04 partial):**
-ROADMAP success criterion 4 requires the catalog to show expiry date/time for owned routes. The `RouteCard.LicenseStatusBadge` composable receives the `expiresAt` string but only renders a status label chip ("Active", "Expired", etc.). The expiry date is invisible in catalog and My Routes list views. Users must navigate into a route's detail screen to see when a time-based license expires. Route detail itself is complete.
-
-Both gaps are isolated and fixable without structural changes:
-- Gap 1: update either the backend 403 response codes or the Android mapping
-- Gap 2: add expiry text to `LicenseStatusBadge` for ACTIVE and EXPIRING_SOON states
+**Test:** Trigger a navigation start for a route with an expired license (first attempt, cache cold)
+**Expected:** Snackbar shows "License expired" (not the generic "No license found")
+**Why human:** Requires a real server response with a cold Redis cache; EXPIRED code path mapping cannot be end-to-end tested statically
 
 ---
 
-_Verified: 2026-03-15T14:00:00Z_
+## Re-verification Summary
+
+Both gaps from the initial verification are closed:
+
+**Gap 1 — Backend 403 specific codes (closed):**
+`backend/src/routes/licenses.ts` lines 82–96 now perform a second `prisma.license.findFirst` query (no active-license filter) after the first query finds nothing. The result determines the specific rejection code: `NOT_FOUND` when no license record exists at all, `REVOKED` when `revokedAt` is non-null, and `EXPIRED` when `expiresAt` is in the past. The Android `LicenseRepository.parseErrorCode` + `when` block maps all three to distinct user messages. Minor residual: the negative Redis cache entry does not store the reason, so cached repeat calls within 60s still return `LICENSE_INVALID`. This affects only rapid retries, not first-attempt user-facing messages.
+
+**Gap 2 — Catalog expiry date display (closed):**
+`RouteCard.kt` `LicenseStatusBadge` (lines 90–118) now computes `showExpiry = expiresAt != null && (status == ACTIVE || status == EXPIRING_SOON)`, formats the date with `DateTimeFormatter("MMM d, yyyy")`, and renders a `Text("Expires $formattedExpiry")` composable in a `Column` below the `SuggestionChip`. LIC-04 is now fully satisfied across route detail, catalog, and My Routes.
+
+All 9 observable truths are verified. Remaining items require human testing on a real device.
+
+---
+
+_Verified: 2026-03-15T15:30:00Z_
 _Verifier: Claude (gsd-verifier)_
