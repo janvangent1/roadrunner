@@ -37,8 +37,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Navigation
 
-- [ ] **NAV-01**: User can launch navigation for any route with a valid license
-- [ ] **NAV-02**: Navigation displays an OpenStreetMap base map (OSMDroid) with the purchased route rendered as a polyline overlay
+- [x] **NAV-01**: User can launch navigation for any route with a valid license
+- [x] **NAV-02**: Navigation displays an OpenStreetMap base map (OSMDroid) with the purchased route rendered as a polyline overlay
 - [x] **NAV-03**: Navigation shows the user's real-time GPS position dot on the map
 - [x] **NAV-04**: Navigation HUD displays glanceable ride stats: current speed, distance covered, distance remaining, elapsed time
 - [x] **NAV-05**: Navigation shows a visual "off-route" indicator when GPS position diverges significantly from the route line
@@ -52,8 +52,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Waypoints
 
-- [ ] **WAYPT-01**: Admin can annotate a route with named waypoints/POIs (fuel stops, water crossings, tricky sections) during upload
-- [ ] **WAYPT-02**: Waypoints are displayed as labeled map pins during navigation
+- [x] **WAYPT-01**: Admin can annotate a route with named waypoints/POIs (fuel stops, water crossings, tricky sections) during upload
+- [x] **WAYPT-02**: Waypoints are displayed as labeled map pins during navigation
 
 ### Admin Dashboard
 
@@ -132,8 +132,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIC-02 | Phase 5 | Complete |
 | LIC-03 | Phase 5 | Complete |
 | LIC-04 | Phase 5 | Complete |
-| NAV-01 | Phase 6 | Pending |
-| NAV-02 | Phase 6 | Pending |
+| NAV-01 | Phase 6 | Complete |
+| NAV-02 | Phase 6 | Complete |
 | NAV-03 | Phase 6 | Complete |
 | NAV-04 | Phase 6 | Complete |
 | NAV-05 | Phase 6 | Complete |
@@ -141,8 +141,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROT-01 | Phase 4 | Complete |
 | PROT-02 | Phase 4 | Complete |
 | PROT-03 | Phase 4 | Complete |
-| WAYPT-01 | Phase 6 | Pending |
-| WAYPT-02 | Phase 6 | Pending |
+| WAYPT-01 | Phase 6 | Complete |
+| WAYPT-02 | Phase 6 | Complete |
 | ADMIN-01 | Phase 2 | Complete |
 | ADMIN-02 | Phase 2 | Complete |
 | ADMIN-03 | Phase 2 | Complete |
