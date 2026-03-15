@@ -105,3 +105,14 @@ None - no external service configuration required.
 ---
 *Phase: 02-admin-dashboard*
 *Completed: 2026-03-15*
+
+## Self-Check: PASSED
+
+Files verified present:
+- dashboard/src/app/(admin)/routes/[id]/page.tsx: FOUND
+- dashboard/src/app/(admin)/licenses/[id]/page.tsx: FOUND
+- .planning/phases/02-admin-dashboard/02-05-SUMMARY.md: FOUND
+
+Commits verified:
+- fd3cfc7: FOUND (feat(02-05): add route edit page with metadata, waypoints, publish/delete)
+- 102fced: FOUND (feat(02-05): add license edit and revoke page)
