@@ -1,11 +1,6 @@
 package com.roadrunner.app.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,6 +10,7 @@ import com.roadrunner.app.ui.auth.LoginScreen
 import com.roadrunner.app.ui.auth.RegisterScreen
 import com.roadrunner.app.ui.catalog.CatalogScreen
 import com.roadrunner.app.ui.myroutes.MyRoutesScreen
+import com.roadrunner.app.ui.routedetail.RouteDetailScreen
 
 @Composable
 fun RoadrunnerNavGraph(
@@ -71,12 +67,10 @@ fun RoadrunnerNavGraph(
         composable(
             route = Screen.RouteDetail.route,
             arguments = listOf(navArgument("routeId") { type = NavType.StringType }),
-        ) { backStackEntry ->
-            val routeId = backStackEntry.arguments?.getString("routeId") ?: return@composable
-            // Real RouteDetailScreen wired in Plan 05
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Route Detail $routeId — Plan 05")
-            }
+        ) {
+            RouteDetailScreen(
+                onBack = { navController.popBackStack() },
+            )
         }
     }
 }
