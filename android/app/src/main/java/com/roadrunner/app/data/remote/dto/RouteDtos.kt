@@ -36,6 +36,7 @@ data class LicenseCheckResponse(
     val sessionToken: String,
     val expiresAt: String?,
     val licenseType: LicenseType,
+    val sessionExpiresAt: String? = null,  // Server-issued 1-hour session window expiry
 )
 
 /** Derived UI model for license status badge display */
