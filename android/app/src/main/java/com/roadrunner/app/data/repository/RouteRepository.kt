@@ -3,7 +3,6 @@ package com.roadrunner.app.data.repository
 import android.content.Context
 import com.roadrunner.app.crypto.GpxCryptoManager
 import com.roadrunner.app.data.remote.ApiService
-import com.roadrunner.app.data.remote.dto.LicenseCheckRequest
 import com.roadrunner.app.data.remote.dto.LicenseStatus
 import com.roadrunner.app.data.remote.dto.LicenseType
 import com.roadrunner.app.data.remote.dto.RouteDto
@@ -11,7 +10,6 @@ import com.roadrunner.app.data.remote.dto.RouteWithLicense
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
-import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,23 +17,27 @@ import javax.inject.Singleton
 class RouteRepository @Inject constructor(
     private val apiService: ApiService,
     private val gpxCryptoManager: GpxCryptoManager,
+    private val licenseRepository: LicenseRepository,
     @ApplicationContext private val context: Context,
 ) {
 
     suspend fun getRoutesWithLicenseStatus(): Result<List<RouteWithLicense>> {
         return try {
+            // Hydrate license cache first (failure is non-fatal — cache stays stale)
+            licenseRepository.getMyLicenses()
+
             val routesResponse = apiService.getRoutes()
             if (!routesResponse.isSuccessful) {
                 return Result.failure(Exception("Failed to load routes: ${routesResponse.code()}"))
             }
             val routes = routesResponse.body() ?: emptyList()
             val result = routes.map { route ->
-                val licenseResult = checkLicenseStatus(route.id)
+                val (status, expiresAt, licenseType) = licenseRepository.computeLicenseStatus(route.id)
                 RouteWithLicense(
                     route = route,
-                    licenseStatus = licenseResult.first,
-                    expiresAt = licenseResult.second,
-                    licenseType = licenseResult.third,
+                    licenseStatus = status,
+                    expiresAt = expiresAt,
+                    licenseType = licenseType,
                 )
             }
             Result.success(result)
@@ -54,34 +56,11 @@ class RouteRepository @Inject constructor(
         }
     }
 
-    /** Returns Triple(LicenseStatus, expiresAt, LicenseType?) */
+    /** Delegates to LicenseRepository.computeLicenseStatus() — reads from in-memory cache.
+     *  Cache must be populated via getMyLicenses() before calling this.
+     */
     suspend fun checkLicenseStatus(routeId: String): Triple<LicenseStatus, String?, LicenseType?> {
-        return try {
-            val response = apiService.checkLicense(LicenseCheckRequest(routeId))
-            if (response.isSuccessful) {
-                val body = response.body()!!
-                val status = when {
-                    body.licenseType == LicenseType.PERMANENT -> LicenseStatus.OWNED
-                    body.expiresAt == null -> LicenseStatus.OWNED
-                    else -> {
-                        val expiryMillis = Instant.parse(body.expiresAt).toEpochMilli()
-                        val nowMillis = System.currentTimeMillis()
-                        val daysLeft = (expiryMillis - nowMillis) / (1000 * 60 * 60 * 24)
-                        when {
-                            daysLeft < 0 -> LicenseStatus.EXPIRED
-                            daysLeft <= 3 -> LicenseStatus.EXPIRING_SOON
-                            else -> LicenseStatus.ACTIVE
-                        }
-                    }
-                }
-                Triple(status, body.expiresAt, body.licenseType)
-            } else {
-                // 403 = no license; treat as Available
-                Triple(LicenseStatus.AVAILABLE, null, null)
-            }
-        } catch (e: Exception) {
-            Triple(LicenseStatus.AVAILABLE, null, null)
-        }
+        return licenseRepository.computeLicenseStatus(routeId)
     }
 
     /**
