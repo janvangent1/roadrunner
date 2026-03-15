@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-security-hardening-and-flavor-scaffold-01-PLAN.md
-last_updated: "2026-03-15T13:28:00.593Z"
+stopped_at: Completed 07-security-hardening-and-flavor-scaffold-02-PLAN.md
+last_updated: "2026-03-15T13:29:48.908Z"
 last_activity: "2026-03-15 — Plan 03-04 complete: Route data layer (RouteDtos, ApiService, RouteRepository), CatalogScreen with pull-to-refresh and license badges, MyRoutesScreen"
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 25
-  completed_plans: 24
+  completed_plans: 25
   percent: 93
 ---
 
@@ -71,6 +71,7 @@ Progress: [█████████░] 93%
 | Phase 06-navigation-experience P03 | 4 | 2 tasks | 4 files |
 | Phase 07-security-hardening-and-flavor-scaffold P03 | 525680 | 1 tasks | 1 files |
 | Phase 07-security-hardening-and-flavor-scaffold P01 | 2 | 2 tasks | 3 files |
+| Phase 07-security-hardening-and-flavor-scaffold P02 | 8 | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -140,6 +141,8 @@ Recent decisions affecting current work:
 - [Phase 07-security-hardening-and-flavor-scaffold]: buildCertificatePinner() returns null in DEBUG and a CertificatePinner in release — single control point avoids duplication; pin applied to both OkHttp clients; TileCacheWorker excluded
 - [Phase 07-security-hardening-and-flavor-scaffold]: flavorDimension renamed from 'variant' to 'brand'; motorcycle applicationId explicit (not suffix); sportscar stub proves extensibility with no source set required
 - [Phase 07-security-hardening-and-flavor-scaffold]: CERT_PIN_SHA256 is placeholder buildConfigField; operator must replace with real SHA-256 fingerprint before Play Store publish
+- [Phase 07-security-hardening-and-flavor-scaffold]: Play Integrity: fail-open on Android network error (v1 pragmatism), fail-secure on backend API error
+- [Phase 07-security-hardening-and-flavor-scaffold]: play_integrity_cloud_project_number placeholder 0 in strings.xml — developer fills in from Play Console before release
 
 ### Pending Todos
 
@@ -153,6 +156,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T13:28:00.586Z
-Stopped at: Completed 07-security-hardening-and-flavor-scaffold-01-PLAN.md
+Last session: 2026-03-15T13:29:48.904Z
+Stopped at: Completed 07-security-hardening-and-flavor-scaffold-02-PLAN.md
 Resume file: None
