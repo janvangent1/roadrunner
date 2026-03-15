@@ -89,6 +89,8 @@ fun RouteDetailScreen(
                     item {
                         OsmPreviewMap(
                             region = route.region,
+                            routeId = viewModel.routeId,
+                            routeRepository = viewModel.routeRepository,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(220.dp),

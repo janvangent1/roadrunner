@@ -26,10 +26,10 @@ data class RouteDetailUiState(
 
 @HiltViewModel
 class RouteDetailViewModel @Inject constructor(
-    private val routeRepository: RouteRepository,
+    val routeRepository: RouteRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val routeId: String = checkNotNull(savedStateHandle["routeId"])
+    val routeId: String = checkNotNull(savedStateHandle["routeId"])
     private val _uiState = MutableStateFlow(RouteDetailUiState())
     val uiState: StateFlow<RouteDetailUiState> = _uiState.asStateFlow()
 
