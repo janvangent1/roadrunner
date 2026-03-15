@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -19,13 +20,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,9 +47,19 @@ import java.util.Locale
 @Composable
 fun RouteDetailScreen(
     onBack: () -> Unit,
+    onStartNavigation: (routeId: String) -> Unit,
     viewModel: RouteDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(uiState.navigationError) {
+        val error = uiState.navigationError
+        if (error != null) {
+            snackbarHostState.showSnackbar(error)
+            viewModel.clearNavigationError()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -56,7 +71,8 @@ fun RouteDetailScreen(
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         when {
             uiState.isLoading -> Box(
@@ -134,22 +150,34 @@ fun RouteDetailScreen(
                         PurchaseOptionsSection(modifier = Modifier.padding(16.dp))
                     }
 
-                    // Start Navigation button (disabled in Phase 3 — enabled Phase 5)
+                    // Start Navigation button
                     item {
-                        Button(
-                            onClick = { /* Phase 5 */ },
-                            enabled = false,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                        ) {
-                            Text("Start Navigation")
-                        }
-                        Text(
-                            "Navigation unlocked in a future update",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(horizontal = 16.dp),
+                        val canNavigate = uiState.licenseStatus in listOf(
+                            LicenseStatus.OWNED, LicenseStatus.ACTIVE, LicenseStatus.EXPIRING_SOON
                         )
+                        Column(Modifier.padding(16.dp)) {
+                            Button(
+                                onClick = { viewModel.startNavigation { onStartNavigation(viewModel.routeId) } },
+                                enabled = canNavigate && !uiState.isStartingNavigation,
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                if (uiState.isStartingNavigation) {
+                                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                } else {
+                                    Text("Start Navigation")
+                                }
+                            }
+                            if (!canNavigate) {
+                                Text(
+                                    when (uiState.licenseStatus) {
+                                        LicenseStatus.EXPIRED -> "License expired — contact us to renew"
+                                        else -> "Purchase a license to start navigation"
+                                    },
+                                    style = MaterialTheme.typography.labelSmall,
+                                    modifier = Modifier.padding(top = 4.dp),
+                                )
+                            }
+                        }
                     }
                 }
             }
