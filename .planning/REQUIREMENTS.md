@@ -39,9 +39,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **NAV-01**: User can launch navigation for any route with a valid license
 - [ ] **NAV-02**: Navigation displays an OpenStreetMap base map (OSMDroid) with the purchased route rendered as a polyline overlay
-- [ ] **NAV-03**: Navigation shows the user's real-time GPS position dot on the map
-- [ ] **NAV-04**: Navigation HUD displays glanceable ride stats: current speed, distance covered, distance remaining, elapsed time
-- [ ] **NAV-05**: Navigation shows a visual "off-route" indicator when GPS position diverges significantly from the route line
+- [x] **NAV-03**: Navigation shows the user's real-time GPS position dot on the map
+- [x] **NAV-04**: Navigation HUD displays glanceable ride stats: current speed, distance covered, distance remaining, elapsed time
+- [x] **NAV-05**: Navigation shows a visual "off-route" indicator when GPS position diverges significantly from the route line
 - [ ] **NAV-06**: Map tiles for a purchased route area are pre-cached on-device for fully offline navigation
 
 ### Route Protection
@@ -134,9 +134,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LIC-04 | Phase 5 | Complete |
 | NAV-01 | Phase 6 | Pending |
 | NAV-02 | Phase 6 | Pending |
-| NAV-03 | Phase 6 | Pending |
-| NAV-04 | Phase 6 | Pending |
-| NAV-05 | Phase 6 | Pending |
+| NAV-03 | Phase 6 | Complete |
+| NAV-04 | Phase 6 | Complete |
+| NAV-05 | Phase 6 | Complete |
 | NAV-06 | Phase 6 | Pending |
 | PROT-01 | Phase 4 | Complete |
 | PROT-02 | Phase 4 | Complete |
