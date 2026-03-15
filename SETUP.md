@@ -14,7 +14,7 @@ You can run the entire stack on your Windows PC for development and testing befo
 |------|---------|
 | Docker Desktop for Windows | https://docs.docker.com/desktop/install/windows-install/ |
 | Android Studio (includes emulator) | https://developer.android.com/studio |
-| Node.js 20+ | https://nodejs.org (dashboard dev only) |
+| Node.js 20+ | Already installed at `D:\Program Files\nodejs\` (v24.14.0) |
 
 ### Step 1 — Start the backend
 
@@ -97,7 +97,7 @@ This lets you test the navigation HUD, off-route detection, and waypoints withou
 | Tool | Version | Where to get it |
 |------|---------|-----------------|
 | Docker + Docker Compose | Latest | https://docs.docker.com/engine/install/raspberry-pi-os/ |
-| Node.js | 20+ | https://nodejs.org (for local dashboard dev only) |
+| Node.js | 20+ | Already installed at `D:\Program Files\nodejs\` (v24.14.0) |
 | Android Studio | Hedgehog+ | https://developer.android.com/studio |
 | Cloudflare account | Free | https://dash.cloudflare.com (for public tunnel) |
 | Google Cloud Console account | Free | https://console.cloud.google.com |
