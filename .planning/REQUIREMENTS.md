@@ -46,8 +46,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Route Protection
 
-- [ ] **PROT-01**: GPX route data is stored on-device encrypted with AES-256-GCM (Google Tink)
-- [ ] **PROT-02**: GPX data is decrypted only in-memory at render time — plaintext is never written to accessible device storage
+- [x] **PROT-01**: GPX route data is stored on-device encrypted with AES-256-GCM (Google Tink)
+- [x] **PROT-02**: GPX data is decrypted only in-memory at render time — plaintext is never written to accessible device storage
 - [ ] **PROT-03**: There is no mechanism in the app to export or share the GPX file
 
 ### Waypoints
@@ -138,8 +138,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NAV-04 | Phase 6 | Pending |
 | NAV-05 | Phase 6 | Pending |
 | NAV-06 | Phase 6 | Pending |
-| PROT-01 | Phase 4 | Pending |
-| PROT-02 | Phase 4 | Pending |
+| PROT-01 | Phase 4 | Complete |
+| PROT-02 | Phase 4 | Complete |
 | PROT-03 | Phase 4 | Pending |
 | WAYPT-01 | Phase 6 | Pending |
 | WAYPT-02 | Phase 6 | Pending |
