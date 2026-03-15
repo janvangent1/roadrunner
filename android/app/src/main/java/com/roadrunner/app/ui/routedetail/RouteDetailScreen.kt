@@ -9,12 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -175,6 +177,28 @@ fun RouteDetailScreen(
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     modifier = Modifier.padding(top = 4.dp),
+                                )
+                            }
+
+                            if (uiState.canDownloadTiles) {
+                                Spacer(Modifier.height(8.dp))
+                                OutlinedButton(
+                                    onClick = { viewModel.downloadTiles() },
+                                    enabled = !uiState.isDownloadingTiles,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    if (uiState.isDownloadingTiles) {
+                                        CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                                        Spacer(Modifier.width(8.dp))
+                                    }
+                                    Text(if (uiState.isDownloadingTiles) "Queuing download..." else "Download for offline use")
+                                }
+                            } else if (uiState.isTilesCached) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    "Map tiles cached for offline use",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.primary,
                                 )
                             }
                         }
