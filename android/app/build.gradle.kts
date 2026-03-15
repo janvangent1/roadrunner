@@ -35,6 +35,7 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000\"")
+            buildConfigField("String", "TINK_KEYSET_B64", "\"PLACEHOLDER_SERVER_KEYSET_B64\"")
             isDebuggable = true
         }
         release {
@@ -103,6 +104,9 @@ dependencies {
 
     // JWT storage — Google Tink (NOT security-crypto which is deprecated Jul 2025)
     implementation("com.google.crypto.tink:tink-android:1.15.0")
+
+    // GPX parsing — used after in-memory decryption of encrypted GPX files
+    implementation("io.ticofab.android-gpx-parser:android-gpx-parser:2.3.0")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
