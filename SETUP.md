@@ -83,7 +83,7 @@ Verify it's running:
 
 ```bash
 docker compose ps          # all three services should show "Up"
-curl http://localhost:3000/health   # should return {"status":"ok"}
+curl http://localhost:4000/health   # should return {"status":"ok"}
 ```
 
 ### 1.4 Create the first admin user
@@ -221,7 +221,7 @@ credentials-file: /home/pi/.cloudflared/<your-tunnel-id>.json
 
 ingress:
   - hostname: api.yourdomain.com
-    service: http://localhost:3000
+    service: http://localhost:4000
   - service: http_status:404
 ```
 
@@ -271,13 +271,13 @@ release {
 ```bash
 cd dashboard
 npm install
-npm run dev     # http://localhost:3001
+PORT=4001 npm run dev   # http://localhost:4001
 ```
 
 Set the API URL in `dashboard/.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:4000/api/v1
 ```
 
 ### 6.2 Deploy on the Pi (alongside the backend)
@@ -293,7 +293,7 @@ Add a second Cloudflare tunnel ingress for the dashboard if you want it publicly
 
 ```yaml
   - hostname: admin.yourdomain.com
-    service: http://localhost:3001
+    service: http://localhost:4001
 ```
 
 ---
@@ -371,8 +371,8 @@ Before handing the app to riders, verify these end-to-end:
 
 | Service | Local URL | Public URL |
 |---------|-----------|------------|
-| Backend API | `http://pi-ip:3000` | `https://api.yourdomain.com` |
-| Admin Dashboard | `http://pi-ip:3001` | `https://admin.yourdomain.com` |
+| Backend API | `http://pi-ip:4000` | `https://api.yourdomain.com` |
+| Admin Dashboard | `http://pi-ip:4001` | `https://admin.yourdomain.com` |
 | PostgreSQL | `pi-ip:5432` | Not exposed |
 | Redis | `pi-ip:6379` | Not exposed |
 
