@@ -92,6 +92,7 @@ dependencies {
 
     // Map
     implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation("androidx.preference:preference-ktx:1.2.1")
 
     // Google Credentials / Sign-In
     implementation("androidx.credentials:credentials:1.3.0")

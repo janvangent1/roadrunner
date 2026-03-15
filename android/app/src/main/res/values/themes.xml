@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Roadrunner" parent="Theme.Material3.DayNight.NoActionBar" />
+    <!-- Base theme for the app. Compose handles the visual theming via RoadrunnerTheme.
+         We use Theme.AppCompat.Light.NoActionBar as the Activity window theme since
+         Material3 XML themes require the com.google.android.material library separately. -->
+    <style name="Theme.Roadrunner" parent="Theme.AppCompat.Light.NoActionBar" />
 </resources>
