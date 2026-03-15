@@ -112,6 +112,12 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 
+    // GPS — FusedLocationProviderClient
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // WorkManager for tile caching (Plan 03)
+    implementation("androidx.work:work-runtime-ktx:2.9.1")
+
     // Core library desugaring for java.time on API 24+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
