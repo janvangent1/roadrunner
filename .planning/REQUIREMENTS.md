@@ -60,7 +60,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **ADMIN-01**: Admin can upload a GPX file and fill in route metadata (title, description, difficulty, terrain type, region, estimated duration)
 - [x] **ADMIN-02**: Admin can add waypoints/POIs to a route (label, coordinates, type)
 - [x] **ADMIN-03**: Admin can manually grant a license to a user account (by email) for a specific route, selecting license type: day pass (with date), multi-day rental (with expiry date), or permanent
-- [ ] **ADMIN-04**: Admin can revoke or modify an existing license grant
+- [x] **ADMIN-04**: Admin can revoke or modify an existing license grant
 - [x] **ADMIN-05**: Admin can publish, unpublish, edit, and delete routes from the catalog
 - [x] **ADMIN-06**: Admin can view all active license grants per route and per user
 
@@ -146,7 +146,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMIN-01 | Phase 2 | Complete |
 | ADMIN-02 | Phase 2 | Complete |
 | ADMIN-03 | Phase 2 | Complete |
-| ADMIN-04 | Phase 2 | Pending |
+| ADMIN-04 | Phase 2 | Complete |
 | ADMIN-05 | Phase 2 | Complete |
 | ADMIN-06 | Phase 2 | Complete |
 

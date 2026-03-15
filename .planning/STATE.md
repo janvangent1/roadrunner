@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-admin-dashboard-04-PLAN.md
-last_updated: "2026-03-14T22:28:45.230Z"
+stopped_at: Completed 02-admin-dashboard-05-PLAN.md
+last_updated: "2026-03-15T06:20:07.953Z"
 last_activity: "2026-03-14 — Plan 01-02 complete: Auth subsystem (register/login/google/refresh/logout), JWT middleware"
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 50
 ---
 
@@ -56,6 +56,7 @@ Progress: [█████░░░░░] 50%
 | Phase 02-admin-dashboard P02 | 2 | 2 tasks | 11 files |
 | Phase 02-admin-dashboard P03 | 2 | 2 tasks | 7 files |
 | Phase 02-admin-dashboard P04 | 2 | 2 tasks | 2 files |
+| Phase 02-admin-dashboard P05 | 3 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,9 @@ Recent decisions affecting current work:
 - [Phase 02-admin-dashboard]: WaypointRow uses string types for latitude/longitude to preserve form input state; caller converts to float on submit
 - [Phase 02-admin-dashboard]: sortOrder is index-derived on submit (not tracked in component state) to keep WaypointEditor purely controlled
 - [Phase 02-admin-dashboard]: getLicenseStatus helper returns label+variant tuple; client-side filter on fetched data; Zod refine for cross-field expiresAt requirement
+- [Phase 02-admin-dashboard]: apiFetch('/routes/:id') (public endpoint) used to load route with waypoints — no dedicated admin single-route GET
+- [Phase 02-admin-dashboard]: License loaded by fetching all via getAdminLicenses() and filtering by id in client — no GET /admin/licenses/:id
+- [Phase 02-admin-dashboard]: Revoke toggle: updateLicense({ revoked: \!license.revokedAt }); local state updated from API response for immediate status reflect
 
 ### Pending Todos
 
@@ -100,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:28:45.226Z
-Stopped at: Completed 02-admin-dashboard-04-PLAN.md
+Last session: 2026-03-15T06:20:07.950Z
+Stopped at: Completed 02-admin-dashboard-05-PLAN.md
 Resume file: None
