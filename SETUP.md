@@ -22,7 +22,7 @@ This guide walks you through getting Roadrunner running from scratch: backend on
 ### 1.1 Clone the repo onto the Pi
 
 ```bash
-git clone <your-repo-url> roadrunner
+git clone https://github.com/janvangent1/roadrunner.git roadrunner
 cd roadrunner/backend
 ```
 
