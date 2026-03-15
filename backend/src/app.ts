@@ -7,6 +7,7 @@ import { routeHandlers } from './routes/routes';
 import { adminRouteHandlers } from './routes/adminRoutes';
 import { licenseHandlers } from './routes/licenses';
 import { adminLicenseHandlers } from './routes/adminLicenses';
+import integrityHandlers from './routes/integrity';
 import { prisma } from './lib/prisma';
 import { redis } from './lib/redis';
 
@@ -54,6 +55,9 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
 
   // Admin license management endpoints
   await app.register(adminLicenseHandlers, { prefix: '/api/v1/admin/licenses' });
+
+  // Play Integrity token verification
+  await app.register(integrityHandlers, { prefix: '/api/v1/integrity' });
 
   return app;
 }

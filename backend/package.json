@@ -19,6 +19,7 @@
     "fastify": "^4.0.0",
     "fastify-plugin": "^4.0.0",
     "google-auth-library": "^9.0.0",
+    "googleapis": "^171.4.0",
     "ioredis": "^5.0.0",
     "tink-crypto": "^0.1.1",
     "uuid": "^9.0.0",
