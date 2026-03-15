@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-android-catalog-and-auth-02-PLAN.md
-last_updated: "2026-03-15T07:00:01.158Z"
+stopped_at: Completed 03-android-catalog-and-auth-03-PLAN.md
+last_updated: "2026-03-15T07:10:31.035Z"
 last_activity: "2026-03-15 — Plan 03-02 complete: Network layer, Tink TokenStorage, AuthInterceptor, TokenRefreshAuthenticator, AuthRepository"
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 14
-  completed_plans: 11
+  completed_plans: 12
   percent: 79
 ---
 
@@ -59,6 +59,7 @@ Progress: [████████░░] 79%
 | Phase 02-admin-dashboard P05 | 3 | 2 tasks | 2 files |
 | Phase 03-android-catalog-and-auth P01 | 14 | 2 tasks | 13 files |
 | Phase 03-android-catalog-and-auth P02 | 2 | 2 tasks | 10 files |
+| Phase 03-android-catalog-and-auth P03 | 7 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,8 @@ Recent decisions affecting current work:
 - [Phase 03-android-catalog-and-auth]: Launcher icon refs removed from AndroidManifest; icon assets deferred to Phase 7 branding
 - [Phase 03-android-catalog-and-auth]: AuthApiService uses plain OkHttpClient (no auth interceptor) to avoid circular dependency in TokenRefreshAuthenticator
 - [Phase 03-android-catalog-and-auth]: google_server_client_id string resource added as placeholder in strings.xml — developer fills in from Google Cloud Console
+- [Phase 03-android-catalog-and-auth]: material-icons-extended added to support Visibility/VisibilityOff password toggle icons — these are in extended set not in material3 core
+- [Phase 03-android-catalog-and-auth]: AuthViewModel.resetState() called after onLoginSuccess/onRegisterSuccess in LaunchedEffect to prevent re-navigation on recomposition
 
 ### Pending Todos
 
@@ -112,6 +115,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T07:00:01.154Z
-Stopped at: Completed 03-android-catalog-and-auth-02-PLAN.md
+Last session: 2026-03-15T07:10:31.031Z
+Stopped at: Completed 03-android-catalog-and-auth-03-PLAN.md
 Resume file: None
