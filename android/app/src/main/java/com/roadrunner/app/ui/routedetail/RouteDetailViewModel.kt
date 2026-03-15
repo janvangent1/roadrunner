@@ -44,6 +44,8 @@ class RouteDetailViewModel @Inject constructor(
     fun loadRoute() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
+            // Hydrate license cache first — ensures computeLicenseStatus has data
+            licenseRepository.getMyLicenses()
             val routeResult = routeRepository.getRoute(routeId)
             val licenseResult = routeRepository.checkLicenseStatus(routeId)
             routeResult
