@@ -33,15 +33,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        lifecycleScope.launch {
-            try {
-                val passed = integrityChecker.check()
-                if (!passed) {
-                    integrityBlocked = true
+        // Skip integrity check in debug builds — emulators fail MEETS_BASIC_INTEGRITY
+        if (!BuildConfig.DEBUG) {
+            lifecycleScope.launch {
+                try {
+                    val passed = integrityChecker.check()
+                    if (!passed) {
+                        integrityBlocked = true
+                    }
+                } catch (e: Exception) {
+                    // Network/API error — allow app to proceed (fail-open for v1)
+                    android.util.Log.w("IntegrityChecker", "check failed with exception: ${e.message}")
                 }
-            } catch (e: Exception) {
-                // Network/API error — allow app to proceed (fail-open for v1)
-                android.util.Log.w("IntegrityChecker", "check failed with exception: ${e.message}")
             }
         }
 

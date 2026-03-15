@@ -4,6 +4,94 @@ This guide walks you through getting Roadrunner running from scratch: backend on
 
 ---
 
+## Local development (PC only — no Pi, no phone needed)
+
+You can run the entire stack on your Windows PC for development and testing before touching the Raspberry Pi or a real phone.
+
+### What you need
+
+| Tool | Install |
+|------|---------|
+| Docker Desktop for Windows | https://docs.docker.com/desktop/install/windows-install/ |
+| Android Studio (includes emulator) | https://developer.android.com/studio |
+| Node.js 20+ | https://nodejs.org (dashboard dev only) |
+
+### Step 1 — Start the backend
+
+```bash
+# From repo root
+cp backend/.env.example backend/.env
+# Edit backend/.env — fill in JWT secrets (anything works for local dev):
+#   JWT_SECRET=localsecret
+#   JWT_REFRESH_SECRET=localrefreshsecret
+#   TINK_KEYSET_JSON=<generate with the command in Part 2 of this guide>
+#   GOOGLE_CLIENT_ID=<leave blank or use test value — Google Sign-In won't work locally>
+#   PORT=4000
+
+docker compose up -d
+```
+
+Verify: open http://localhost:4000/health in your browser — should return `{"status":"ok"}`.
+
+### Step 2 — Start the admin dashboard
+
+```bash
+cd dashboard
+cp .env.example .env.local
+# .env.local already points to http://localhost:4000/api/v1 — no changes needed
+
+npm install
+PORT=4001 npm run dev
+```
+
+Open http://localhost:4001 in your browser. Log in with the admin account you created in Step 1.3 of Part 1.
+
+### Step 3 — Create an Android emulator
+
+1. Open Android Studio → **Device Manager** (right sidebar or Tools menu)
+2. Click **Create Device**
+3. Pick any phone (e.g. Pixel 8) → Next
+4. Download and select **API 35** (Android 15) system image → Next → Finish
+5. Click the play button to start the emulator
+
+### Step 4 — Build and install the debug app
+
+The debug `BASE_URL` is already set to `http://10.0.2.2:4000` — Android's special alias for your PC's localhost:
+
+```bash
+cd android
+./gradlew installMotorcycleDebug
+```
+
+The app installs and opens automatically in the emulator.
+
+### What works on the emulator
+
+| Feature | Works? | Notes |
+|---------|--------|-------|
+| Login / Register | ✓ | |
+| Google Sign-In | ✗ | Needs real device + real Google OAuth client ID |
+| Route catalog | ✓ | |
+| Admin dashboard | ✓ | Via browser at http://localhost:4001 |
+| GPX encryption | ✓ | With real Tink keyset set in `build.gradle.kts` |
+| OSMDroid map | ✓ | Tiles load over internet |
+| Offline tile cache | ✓ | |
+| GPS / navigation | ~ | Use emulator's GPS simulation (see below) |
+| Play Integrity check | skipped | Disabled in debug builds — emulators fail this check |
+| Certificate pinning | skipped | Disabled in debug builds by design |
+
+### Simulating GPS in the emulator
+
+The Android emulator has a built-in GPS route player:
+
+1. In the emulator, click the **...** (Extended Controls) button in the sidebar
+2. Go to **Location**
+3. Either manually set coordinates, or go to **Routes** tab and import a GPX file to play back a ride
+
+This lets you test the navigation HUD, off-route detection, and waypoints without leaving your desk.
+
+---
+
 ## Prerequisites
 
 | Tool | Version | Where to get it |
