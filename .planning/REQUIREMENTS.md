@@ -16,10 +16,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Route Catalog
 
-- [ ] **CATA-01**: User can browse all available routes in a list view
-- [ ] **CATA-02**: Each route card shows title, distance, difficulty, terrain type, region, and thumbnail map
-- [ ] **CATA-03**: User can see license status badge on each route (Owned / Available / Expires in X / Expired)
-- [ ] **CATA-04**: User can access "My Routes" library showing only their purchased/licensed routes
+- [x] **CATA-01**: User can browse all available routes in a list view
+- [x] **CATA-02**: Each route card shows title, distance, difficulty, terrain type, region, and thumbnail map
+- [x] **CATA-03**: User can see license status badge on each route (Owned / Available / Expires in X / Expired)
+- [x] **CATA-04**: User can access "My Routes" library showing only their purchased/licensed routes
 
 ### Route Detail
 
@@ -120,10 +120,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-02 | Phase 3 | Complete |
 | AUTH-03 | Phase 3 | Complete |
 | AUTH-04 | Phase 3 | Complete |
-| CATA-01 | Phase 3 | Pending |
-| CATA-02 | Phase 3 | Pending |
-| CATA-03 | Phase 3 | Pending |
-| CATA-04 | Phase 3 | Pending |
+| CATA-01 | Phase 3 | Complete |
+| CATA-02 | Phase 3 | Complete |
+| CATA-03 | Phase 3 | Complete |
+| CATA-04 | Phase 3 | Complete |
 | DETL-01 | Phase 3 | Pending |
 | DETL-02 | Phase 3 | Pending |
 | DETL-03 | Phase 3 | Pending |

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-android-catalog-and-auth-03-PLAN.md
-last_updated: "2026-03-15T07:10:31.035Z"
+stopped_at: Completed 03-android-catalog-and-auth-04-PLAN.md
+last_updated: "2026-03-15T07:18:06.116Z"
 last_activity: "2026-03-15 — Plan 03-02 complete: Network layer, Tink TokenStorage, AuthInterceptor, TokenRefreshAuthenticator, AuthRepository"
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 14
-  completed_plans: 12
+  completed_plans: 13
   percent: 79
 ---
 
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-03-14)
 ## Current Position
 
 Phase: 3 of 7 (Android Catalog and Auth)
-Plan: 2 of 5 completed in current phase
+Plan: 4 of 5 completed in current phase
 Status: In progress
-Last activity: 2026-03-15 — Plan 03-02 complete: Network layer, Tink TokenStorage, AuthInterceptor, TokenRefreshAuthenticator, AuthRepository
+Last activity: 2026-03-15 — Plan 03-04 complete: Route data layer (RouteDtos, ApiService, RouteRepository), CatalogScreen with pull-to-refresh and license badges, MyRoutesScreen
 
-Progress: [████████░░] 79%
+Progress: [█████████░] 93%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [████████░░] 79%
 | Phase 03-android-catalog-and-auth P01 | 14 | 2 tasks | 13 files |
 | Phase 03-android-catalog-and-auth P02 | 2 | 2 tasks | 10 files |
 | Phase 03-android-catalog-and-auth P03 | 7 | 2 tasks | 6 files |
+| Phase 03-android-catalog-and-auth P04 | 5 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,8 @@ Recent decisions affecting current work:
 - [Phase 03-android-catalog-and-auth]: google_server_client_id string resource added as placeholder in strings.xml — developer fills in from Google Cloud Console
 - [Phase 03-android-catalog-and-auth]: material-icons-extended added to support Visibility/VisibilityOff password toggle icons — these are in extended set not in material3 core
 - [Phase 03-android-catalog-and-auth]: AuthViewModel.resetState() called after onLoginSuccess/onRegisterSuccess in LaunchedEffect to prevent re-navigation on recomposition
+- [Phase 03-android-catalog-and-auth]: coreLibraryDesugaring uses com.android.tools:desugar_jdk_libs:2.1.2 (not com.android.tools.desugar_jdk_libs which is invalid Maven group)
+- [Phase 03-android-catalog-and-auth]: PullToRefreshBox from androidx.compose.material3.pulltorefresh available in BOM 2024.09.00 (Material3 1.3.0) — no deprecated material fallback needed
 
 ### Pending Todos
 
@@ -115,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T07:10:31.031Z
-Stopped at: Completed 03-android-catalog-and-auth-03-PLAN.md
+Last session: 2026-03-15T07:18:06.112Z
+Stopped at: Completed 03-android-catalog-and-auth-04-PLAN.md
 Resume file: None
