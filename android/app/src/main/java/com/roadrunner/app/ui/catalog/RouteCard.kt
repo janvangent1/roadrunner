@@ -24,6 +24,10 @@ import androidx.compose.ui.unit.dp
 import com.roadrunner.app.data.remote.dto.Difficulty
 import com.roadrunner.app.data.remote.dto.LicenseStatus
 import com.roadrunner.app.data.remote.dto.RouteWithLicense
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun RouteCard(
@@ -83,14 +87,35 @@ private fun LicenseStatusBadge(
         LicenseStatus.AVAILABLE -> Triple("Available", Color(0xFF9E9E9E), Color.White)
     }
 
-    SuggestionChip(
-        onClick = {},
-        label = { Text(text = label, style = MaterialTheme.typography.labelSmall) },
-        colors = SuggestionChipDefaults.suggestionChipColors(
-            containerColor = containerColor,
-            labelColor = contentColor,
-        ),
-    )
+    val showExpiry = expiresAt != null &&
+        (status == LicenseStatus.ACTIVE || status == LicenseStatus.EXPIRING_SOON)
+
+    val formattedExpiry = if (showExpiry && expiresAt != null) {
+        val formatter = DateTimeFormatter
+            .ofPattern("MMM d, yyyy", Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
+        "Expires ${formatter.format(Instant.parse(expiresAt))}"
+    } else {
+        null
+    }
+
+    Column(horizontalAlignment = Alignment.End) {
+        SuggestionChip(
+            onClick = {},
+            label = { Text(text = label, style = MaterialTheme.typography.labelSmall) },
+            colors = SuggestionChipDefaults.suggestionChipColors(
+                containerColor = containerColor,
+                labelColor = contentColor,
+            ),
+        )
+        if (formattedExpiry != null) {
+            Text(
+                text = formattedExpiry,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
 }
 
 @Composable
