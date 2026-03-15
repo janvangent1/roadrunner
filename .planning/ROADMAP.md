@@ -122,7 +122,12 @@ Plans:
   4. When GPS position diverges more than ~50 m from the route line, a visible "off-route" indicator activates; it clears when the user returns to the route
   5. Admin-defined waypoints/POIs appear as labeled map pins on the navigation map during an active session
   6. Map tiles for a purchased route area are pre-cached on-device and navigation works fully offline with no cell signal
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Gradle deps (play-services-location, WorkManager), LocationRepository, OffRouteDetector, NavigationViewModel
+- [ ] 06-02-PLAN.md — Full NavigationScreen: OSMDroid map, GPS overlay, HUD, off-route banner, waypoint pins
+- [ ] 06-03-PLAN.md — TileCacheManager, TileCacheWorker (WorkManager), RouteDetail offline download button
 
 ### Phase 7: Security Hardening and Flavor Scaffold
 **Goal**: The release build is hardened against reverse engineering, device integrity is verified before content keys are issued, and the Android project is structured to support the future sport car app variant with no architectural rework.
@@ -147,5 +152,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 3. Android Catalog and Auth | 5/5 | Complete    | 2026-03-15 |
 | 4. Android Encryption Layer | 2/2 | Complete    | 2026-03-15 |
 | 5. License Enforcement | 2/3 | Complete    | 2026-03-15 |
-| 6. Navigation Experience | 0/? | Not started | - |
+| 6. Navigation Experience | 0/3 | Not started | - |
 | 7. Security Hardening and Flavor Scaffold | 0/? | Not started | - |
