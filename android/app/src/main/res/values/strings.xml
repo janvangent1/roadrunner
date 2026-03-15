@@ -2,4 +2,6 @@
 <resources>
     <string name="app_name">Roadrunner</string>
     <string name="google_server_client_id">YOUR_GOOGLE_CLIENT_ID</string>
+    <!-- Play Integrity: fill in Google Cloud project number from Play Console before release -->
+    <string name="play_integrity_cloud_project_number">0</string>
 </resources>

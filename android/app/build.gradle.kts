@@ -129,6 +129,12 @@ dependencies {
     // Play Integrity API
     implementation("com.google.android.play:integrity:1.4.0")
 
+    // DataStore for integrity check 24h cache (Plan 07-02)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // Coroutines bridge for Task.await() — required by Play Integrity (Plan 07-02)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+
     // Core library desugaring for java.time on API 24+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
