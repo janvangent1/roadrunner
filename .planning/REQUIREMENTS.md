@@ -42,7 +42,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **NAV-03**: Navigation shows the user's real-time GPS position dot on the map
 - [x] **NAV-04**: Navigation HUD displays glanceable ride stats: current speed, distance covered, distance remaining, elapsed time
 - [x] **NAV-05**: Navigation shows a visual "off-route" indicator when GPS position diverges significantly from the route line
-- [ ] **NAV-06**: Map tiles for a purchased route area are pre-cached on-device for fully offline navigation
+- [x] **NAV-06**: Map tiles for a purchased route area are pre-cached on-device for fully offline navigation
 
 ### Route Protection
 
@@ -137,7 +137,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | NAV-03 | Phase 6 | Complete |
 | NAV-04 | Phase 6 | Complete |
 | NAV-05 | Phase 6 | Complete |
-| NAV-06 | Phase 6 | Pending |
+| NAV-06 | Phase 6 | Complete |
 | PROT-01 | Phase 4 | Complete |
 | PROT-02 | Phase 4 | Complete |
 | PROT-03 | Phase 4 | Complete |
