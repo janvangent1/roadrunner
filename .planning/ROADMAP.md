@@ -89,7 +89,11 @@ Plans:
   2. The route line renders correctly on the OSMDroid map by decrypting the GPX to a `ByteArray` in memory and passing it directly to the overlay renderer — no intermediate file is written
   3. There is no button, menu item, share sheet, or API endpoint in the app that allows a user to export or access the GPX data
   4. On a rooted device, the file stored in `getFilesDir()` cannot be opened as valid GPX without the app's Keystore-backed key
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — GpxCryptoManager (StreamingAead keyset seeding from BuildConfig) and android-gpx-parser dependency
+- [ ] 04-02-PLAN.md — GPX download/store in RouteRepository, OsmPreviewMap polyline rendering, PROT-03 no-export verification
 
 ### Phase 5: License Enforcement
 **Goal**: Licenses are validated server-side on every navigation start, expired licenses block new navigation sessions, active sessions continue for up to one hour after expiry, and users can see exactly what they own.
@@ -136,7 +140,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Backend Foundation | 4/4 | Complete    | 2026-03-14 |
 | 2. Admin Dashboard | 5/5 | Complete    | 2026-03-15 |
 | 3. Android Catalog and Auth | 5/5 | Complete    | 2026-03-15 |
-| 4. Android Encryption Layer | 0/? | Not started | - |
+| 4. Android Encryption Layer | 0/2 | Not started | - |
 | 5. License Enforcement | 0/? | Not started | - |
 | 6. Navigation Experience | 0/? | Not started | - |
 | 7. Security Hardening and Flavor Scaffold | 0/? | Not started | - |
