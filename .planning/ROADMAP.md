@@ -71,7 +71,14 @@ Plans:
   4. Each route card shows the correct license status badge (Owned / Available / Expires in X / Expired) based on the user's grants
   5. User can open a route detail page showing full metadata, a preview map with the route line visible, available purchase options with prices, and current license status with expiry date if applicable
   6. "My Routes" library shows only routes the user holds a valid license for
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Gradle scaffold, Hilt, NavGraph, OSMDroid init, motorcycle flavor
+- [ ] 03-02-PLAN.md — Network layer (Retrofit/OkHttp), Tink token storage, AuthRepository
+- [ ] 03-03-PLAN.md — Auth screens: LoginScreen, RegisterScreen, session-aware NavGraph
+- [ ] 03-04-PLAN.md — Route data layer, CatalogScreen with license badges, MyRoutesScreen
+- [ ] 03-05-PLAN.md — RouteDetailScreen with OSMDroid preview map and purchase options
 
 ### Phase 4: Android Encryption Layer
 **Goal**: GPX route data is stored on-device encrypted and decrypted only in memory at render time — the security boundary that protects route content is in place and validated.
