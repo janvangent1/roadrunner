@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Backend Foundation** - Fastify API, PostgreSQL schema, Redis, and server-side GPX encryption pipeline (completed 2026-03-14)
 - [x] **Phase 2: Admin Dashboard** - Next.js dashboard for route upload, catalog management, and manual license grants (completed 2026-03-15)
-- [ ] **Phase 3: Android Catalog and Auth** - Android app with account system, route catalog, route detail, and OSMDroid preview map
+- [x] **Phase 3: Android Catalog and Auth** - Android app with account system, route catalog, route detail, and OSMDroid preview map (completed 2026-03-15)
 - [ ] **Phase 4: Android Encryption Layer** - Tink AES-256-GCM encrypted GPX storage and decrypt-at-render pipeline
 - [ ] **Phase 5: License Enforcement** - Server-side license validation, grace period logic, and navigation gating
 - [ ] **Phase 6: Navigation Experience** - Full navigation screen with HUD, off-route indicator, waypoints, and offline tile caching
@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Backend Foundation | 4/4 | Complete    | 2026-03-14 |
 | 2. Admin Dashboard | 5/5 | Complete    | 2026-03-15 |
-| 3. Android Catalog and Auth | 4/5 | In Progress|  |
+| 3. Android Catalog and Auth | 5/5 | Complete   | 2026-03-15 |
 | 4. Android Encryption Layer | 0/? | Not started | - |
 | 5. License Enforcement | 0/? | Not started | - |
 | 6. Navigation Experience | 0/? | Not started | - |

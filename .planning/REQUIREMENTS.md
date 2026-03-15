@@ -23,10 +23,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Route Detail
 
-- [ ] **DETL-01**: User can view route detail page with full metadata before purchasing
-- [ ] **DETL-02**: Route detail shows distance, difficulty, terrain type, estimated duration, region, and preview map with route line visible (data locked)
-- [ ] **DETL-03**: Route detail shows available purchase options (day pass / multi-day rental / permanent) with prices
-- [ ] **DETL-04**: User can see current license status and expiry date/time if applicable
+- [x] **DETL-01**: User can view route detail page with full metadata before purchasing
+- [x] **DETL-02**: Route detail shows distance, difficulty, terrain type, estimated duration, region, and preview map with route line visible (data locked)
+- [x] **DETL-03**: Route detail shows available purchase options (day pass / multi-day rental / permanent) with prices
+- [x] **DETL-04**: User can see current license status and expiry date/time if applicable
 
 ### Licensing
 
@@ -124,10 +124,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CATA-02 | Phase 3 | Complete |
 | CATA-03 | Phase 3 | Complete |
 | CATA-04 | Phase 3 | Complete |
-| DETL-01 | Phase 3 | Pending |
-| DETL-02 | Phase 3 | Pending |
-| DETL-03 | Phase 3 | Pending |
-| DETL-04 | Phase 3 | Pending |
+| DETL-01 | Phase 3 | Complete |
+| DETL-02 | Phase 3 | Complete |
+| DETL-03 | Phase 3 | Complete |
+| DETL-04 | Phase 3 | Complete |
 | LIC-01 | Phase 5 | Pending |
 | LIC-02 | Phase 5 | Pending |
 | LIC-03 | Phase 5 | Pending |
