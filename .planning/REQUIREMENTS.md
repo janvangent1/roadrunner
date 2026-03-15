@@ -30,9 +30,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Licensing
 
-- [ ] **LIC-01**: License is account-bound and validated server-side on every navigation start
-- [ ] **LIC-02**: Navigation is blocked when a license has expired
-- [ ] **LIC-03**: An active navigation session continues for up to 1 hour after license expiry (grace period); starting a new session after expiry is blocked
+- [x] **LIC-01**: License is account-bound and validated server-side on every navigation start
+- [x] **LIC-02**: Navigation is blocked when a license has expired
+- [x] **LIC-03**: An active navigation session continues for up to 1 hour after license expiry (grace period); starting a new session after expiry is blocked
 - [ ] **LIC-04**: User can see which routes they have access to and what type of license they hold (day pass / multi-day rental with expiry date / permanent)
 
 ### Navigation
@@ -128,9 +128,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DETL-02 | Phase 3 | Complete |
 | DETL-03 | Phase 3 | Complete |
 | DETL-04 | Phase 3 | Complete |
-| LIC-01 | Phase 5 | Pending |
-| LIC-02 | Phase 5 | Pending |
-| LIC-03 | Phase 5 | Pending |
+| LIC-01 | Phase 5 | Complete |
+| LIC-02 | Phase 5 | Complete |
+| LIC-03 | Phase 5 | Complete |
 | LIC-04 | Phase 5 | Pending |
 | NAV-01 | Phase 6 | Pending |
 | NAV-02 | Phase 6 | Pending |
