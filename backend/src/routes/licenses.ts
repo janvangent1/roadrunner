@@ -78,7 +78,22 @@ async function licenseHandlersPlugin(fastify: FastifyInstance): Promise<void> {
     if (!license) {
       // Cache the negative result so rapid re-checks don't hammer the DB
       await redisSet(cacheKey, JSON.stringify({ valid: false, expiresAt: null }), CACHE_TTL_SECONDS);
-      return reply.code(403).send({ error: 'No valid license', code: 'LICENSE_INVALID' });
+
+      // Determine the specific reason for rejection so the client can show an accurate message.
+      const anyLicense = await prisma.license.findFirst({
+        where: { userId, routeId },
+        select: { revokedAt: true, expiresAt: true },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (!anyLicense) {
+        return reply.code(403).send({ error: 'No license found for this route', code: 'NOT_FOUND' });
+      }
+      if (anyLicense.revokedAt !== null) {
+        return reply.code(403).send({ error: 'License has been revoked', code: 'REVOKED' });
+      }
+      // expiresAt must be in the past (the only remaining reason the first query excluded it)
+      return reply.code(403).send({ error: 'License has expired', code: 'EXPIRED' });
     }
 
     // Cache the positive result
