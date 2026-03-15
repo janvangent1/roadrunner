@@ -23,12 +23,17 @@ android {
         }
     }
 
-    flavorDimensions += "variant"
+    flavorDimensions += "brand"
     productFlavors {
         create("motorcycle") {
-            dimension = "variant"
-            applicationIdSuffix = ""
-            versionNameSuffix = ""
+            dimension = "brand"
+            applicationId = "com.roadrunner.app"
+            versionNameSuffix = "-motorcycle"
+        }
+        create("sportscar") {
+            dimension = "brand"
+            applicationId = "com.roadrunner.sportscar"
+            versionNameSuffix = "-sportscar"
         }
     }
 
@@ -36,11 +41,14 @@ android {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:3000\"")
             buildConfigField("String", "TINK_KEYSET_B64", "\"PLACEHOLDER_SERVER_KEYSET_B64\"")
+            buildConfigField("String", "CERT_PIN_SHA256", "\"PLACEHOLDER_PIN_SHA256\"")
             isDebuggable = true
         }
         release {
             buildConfigField("String", "BASE_URL", "\"https://api.roadrunner.app\"")
-            isMinifyEnabled = false // R8 hardening is Phase 7
+            buildConfigField("String", "CERT_PIN_SHA256", "\"PLACEHOLDER_PIN_SHA256\"")
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -117,6 +125,9 @@ dependencies {
 
     // WorkManager for tile caching (Plan 03)
     implementation("androidx.work:work-runtime-ktx:2.9.1")
+
+    // Play Integrity API
+    implementation("com.google.android.play:integrity:1.4.0")
 
     // Core library desugaring for java.time on API 24+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
