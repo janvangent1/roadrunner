@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 07-security-hardening-and-flavor-scaffold-03-PLAN.md
-last_updated: "2026-03-15T13:27:13.854Z"
+stopped_at: Completed 07-security-hardening-and-flavor-scaffold-01-PLAN.md
+last_updated: "2026-03-15T13:28:00.593Z"
 last_activity: "2026-03-15 — Plan 03-04 complete: Route data layer (RouteDtos, ApiService, RouteRepository), CatalogScreen with pull-to-refresh and license badges, MyRoutesScreen"
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 25
-  completed_plans: 23
+  completed_plans: 24
   percent: 93
 ---
 
@@ -70,6 +70,7 @@ Progress: [█████████░] 93%
 | Phase 06-navigation-experience P02 | 4 | 2 tasks | 2 files |
 | Phase 06-navigation-experience P03 | 4 | 2 tasks | 4 files |
 | Phase 07-security-hardening-and-flavor-scaffold P03 | 525680 | 1 tasks | 1 files |
+| Phase 07-security-hardening-and-flavor-scaffold P01 | 2 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -137,6 +138,8 @@ Recent decisions affecting current work:
 - [Phase 06-navigation-experience]: TileCacheWorker is a plain CoroutineWorker (not Hilt-injected) — WorkManager creates workers directly
 - [Phase 06-navigation-experience]: isTilesCached uses loose heuristic (zoom 10 dir non-empty) — per-route tracking is v2 concern
 - [Phase 07-security-hardening-and-flavor-scaffold]: buildCertificatePinner() returns null in DEBUG and a CertificatePinner in release — single control point avoids duplication; pin applied to both OkHttp clients; TileCacheWorker excluded
+- [Phase 07-security-hardening-and-flavor-scaffold]: flavorDimension renamed from 'variant' to 'brand'; motorcycle applicationId explicit (not suffix); sportscar stub proves extensibility with no source set required
+- [Phase 07-security-hardening-and-flavor-scaffold]: CERT_PIN_SHA256 is placeholder buildConfigField; operator must replace with real SHA-256 fingerprint before Play Store publish
 
 ### Pending Todos
 
@@ -150,6 +153,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T13:27:13.850Z
-Stopped at: Completed 07-security-hardening-and-flavor-scaffold-03-PLAN.md
+Last session: 2026-03-15T13:28:00.586Z
+Stopped at: Completed 07-security-hardening-and-flavor-scaffold-01-PLAN.md
 Resume file: None
