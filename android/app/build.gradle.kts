@@ -40,7 +40,7 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:4000\"")
-            buildConfigField("String", "TINK_KEYSET_B64", "\"PLACEHOLDER_SERVER_KEYSET_B64\"")
+            buildConfigField("String", "TINK_KEYSET_B64", "\"CKidxt0HEmQKWAowdHlwZS5nb29nbGVhcGlzLmNvbS9nb29nbGUuY3J5cHRvLnRpbmsuQWVzR2NtS2V5EiIaIDOM9SWyYULKEpjqwaXIu77ojBFlU3FHg3kN3752HNRSGAEQARioncbdByAB\"")
             buildConfigField("String", "CERT_PIN_SHA256", "\"PLACEHOLDER_PIN_SHA256\"")
             isDebuggable = true
         }
