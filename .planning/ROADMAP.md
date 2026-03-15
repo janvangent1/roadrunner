@@ -138,7 +138,12 @@ Plans:
   2. Play Integrity API verification runs at account registration and before the first content key is issued — a device that fails the check is denied content delivery
   3. HTTPS certificate pinning is active in release builds; a MITM proxy cannot intercept API traffic without triggering a certificate error
   4. A `motorcycle` product flavor builds successfully with the correct branding, strings, and icons; the project structure supports adding a `sportscar` flavor without touching `:core` module code
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — R8 minification, ProGuard rules (Tink/OSMDroid/DTOs/Log-strip), motorcycle branding source set, sportscar flavor stub
+- [ ] 07-02-PLAN.md — Play Integrity API: IntegrityChecker.kt, 24h DataStore cache, non-dismissible block dialog, backend verify endpoint
+- [ ] 07-03-PLAN.md — HTTPS certificate pinning: CertificatePinner on both OkHttp clients, release-only guard, BuildConfig pin source
 
 ## Progress
 
@@ -153,4 +158,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Android Encryption Layer | 2/2 | Complete    | 2026-03-15 |
 | 5. License Enforcement | 2/3 | Complete    | 2026-03-15 |
 | 6. Navigation Experience | 3/3 | Complete    | 2026-03-15 |
-| 7. Security Hardening and Flavor Scaffold | 0/? | Not started | - |
+| 7. Security Hardening and Flavor Scaffold | 0/3 | Not started | - |
