@@ -35,10 +35,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffold, Docker Compose, and Prisma schema (all four tables)
-- [ ] 01-02-PLAN.md — Auth endpoints (register, login, google, refresh, logout) and JWT middleware
-- [ ] 01-03-PLAN.md — Route endpoints and Tink AES-256-GCM GPX encryption pipeline
-- [ ] 01-04-PLAN.md — Admin license management and license check with Redis cache
+- [x] 01-01-PLAN.md — Project scaffold, Docker Compose, and Prisma schema (all four tables)
+- [x] 01-02-PLAN.md — Auth endpoints (register, login, google, refresh, logout) and JWT middleware
+- [x] 01-03-PLAN.md — Route endpoints and Tink AES-256-GCM GPX encryption pipeline
+- [x] 01-04-PLAN.md — Admin license management and license check with Redis cache
 
 ### Phase 2: Admin Dashboard
 **Goal**: The admin can upload GPX routes with full metadata, manage the catalog, and manually grant or revoke licenses — the catalog is populated and ready for real Android testing.
@@ -54,11 +54,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Backend gap (GET/PUT admin routes), Next.js scaffold, shared types, API client, Docker service
-- [ ] 02-02-PLAN.md — Login page, auth guard (AdminLayout), NavBar
-- [ ] 02-03-PLAN.md — Routes catalog table (/routes) and route create page (/routes/new) with GPX upload and WaypointEditor
-- [ ] 02-04-PLAN.md — Licenses table (/licenses) and grant license page (/licenses/new)
-- [ ] 02-05-PLAN.md — Route edit page (/routes/[id]) and license edit/revoke page (/licenses/[id])
+- [x] 02-01-PLAN.md — Backend gap (GET/PUT admin routes), Next.js scaffold, shared types, API client, Docker service
+- [x] 02-02-PLAN.md — Login page, auth guard (AdminLayout), NavBar
+- [x] 02-03-PLAN.md — Routes catalog table (/routes) and route create page (/routes/new) with GPX upload and WaypointEditor
+- [x] 02-04-PLAN.md — Licenses table (/licenses) and grant license page (/licenses/new)
+- [x] 02-05-PLAN.md — Route edit page (/routes/[id]) and license edit/revoke page (/licenses/[id])
 
 ### Phase 3: Android Catalog and Auth
 **Goal**: A rider can open the Android app, create or sign in to an account, browse the route catalog, and view route detail pages with a preview map — the complete pre-purchase experience works end-to-end.
@@ -74,11 +74,11 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Gradle scaffold, Hilt, NavGraph, OSMDroid init, motorcycle flavor
-- [ ] 03-02-PLAN.md — Network layer (Retrofit/OkHttp), Tink token storage, AuthRepository
-- [ ] 03-03-PLAN.md — Auth screens: LoginScreen, RegisterScreen, session-aware NavGraph
-- [ ] 03-04-PLAN.md — Route data layer, CatalogScreen with license badges, MyRoutesScreen
-- [ ] 03-05-PLAN.md — RouteDetailScreen with OSMDroid preview map and purchase options
+- [x] 03-01-PLAN.md — Gradle scaffold, Hilt, NavGraph, OSMDroid init, motorcycle flavor
+- [x] 03-02-PLAN.md — Network layer (Retrofit/OkHttp), Tink token storage, AuthRepository
+- [x] 03-03-PLAN.md — Auth screens: LoginScreen, RegisterScreen, session-aware NavGraph
+- [x] 03-04-PLAN.md — Route data layer, CatalogScreen with license badges, MyRoutesScreen
+- [x] 03-05-PLAN.md — RouteDetailScreen with OSMDroid preview map and purchase options
 
 ### Phase 4: Android Encryption Layer
 **Goal**: GPX route data is stored on-device encrypted and decrypted only in memory at render time — the security boundary that protects route content is in place and validated.
@@ -92,8 +92,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — GpxCryptoManager (StreamingAead keyset seeding from BuildConfig) and android-gpx-parser dependency
-- [ ] 04-02-PLAN.md — GPX download/store in RouteRepository, OsmPreviewMap polyline rendering, PROT-03 no-export verification
+- [x] 04-01-PLAN.md — GpxCryptoManager (StreamingAead keyset seeding from BuildConfig) and android-gpx-parser dependency
+- [x] 04-02-PLAN.md — GPX download/store in RouteRepository, OsmPreviewMap polyline rendering, PROT-03 no-export verification
 
 ### Phase 5: License Enforcement
 **Goal**: Licenses are validated server-side on every navigation start, expired licenses block new navigation sessions, active sessions continue for up to one hour after expiry, and users can see exactly what they own.
@@ -107,9 +107,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 05-01-PLAN.md — Backend GET /licenses/my endpoint, LicenseDtos.kt, ApiService.getMyLicenses, LicenseRepository with cache
-- [ ] 05-02-PLAN.md — NavigationSessionManager, NavigationScreen placeholder, ExpiryDialog, Start Navigation wiring, NavGraph
-- [ ] 05-03-PLAN.md — License display refactor: RouteRepository, CatalogViewModel, RouteDetailViewModel use LicenseRepository cache
+- [x] 05-01-PLAN.md — Backend GET /licenses/my endpoint, LicenseDtos.kt, ApiService.getMyLicenses, LicenseRepository with cache
+- [x] 05-02-PLAN.md — NavigationSessionManager, NavigationScreen placeholder, ExpiryDialog, Start Navigation wiring, NavGraph
+- [x] 05-03-PLAN.md — License display refactor: RouteRepository, CatalogViewModel, RouteDetailViewModel use LicenseRepository cache
 
 ### Phase 6: Navigation Experience
 **Goal**: The navigation screen is fully functional for offroad motorcycle use: real-time GPS position, ride stats HUD, off-route warning, waypoint pins, and offline map tiles all work without a cell signal.
@@ -125,9 +125,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — Gradle deps (play-services-location, WorkManager), LocationRepository, OffRouteDetector, NavigationViewModel
-- [ ] 06-02-PLAN.md — Full NavigationScreen: OSMDroid map, GPS overlay, HUD, off-route banner, waypoint pins
-- [ ] 06-03-PLAN.md — TileCacheManager, TileCacheWorker (WorkManager), RouteDetail offline download button
+- [x] 06-01-PLAN.md — Gradle deps (play-services-location, WorkManager), LocationRepository, OffRouteDetector, NavigationViewModel
+- [x] 06-02-PLAN.md — Full NavigationScreen: OSMDroid map, GPS overlay, HUD, off-route banner, waypoint pins
+- [x] 06-03-PLAN.md — TileCacheManager, TileCacheWorker (WorkManager), RouteDetail offline download button
 
 ### Phase 7: Security Hardening and Flavor Scaffold
 **Goal**: The release build is hardened against reverse engineering, device integrity is verified before content keys are issued, and the Android project is structured to support the future sport car app variant with no architectural rework.
@@ -141,9 +141,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — R8 minification, ProGuard rules (Tink/OSMDroid/DTOs/Log-strip), motorcycle branding source set, sportscar flavor stub
-- [ ] 07-02-PLAN.md — Play Integrity API: IntegrityChecker.kt, 24h DataStore cache, non-dismissible block dialog, backend verify endpoint
-- [ ] 07-03-PLAN.md — HTTPS certificate pinning: CertificatePinner on both OkHttp clients, release-only guard, BuildConfig pin source
+- [x] 07-01-PLAN.md — R8 minification, ProGuard rules (Tink/OSMDroid/DTOs/Log-strip), motorcycle branding source set, sportscar flavor stub
+- [x] 07-02-PLAN.md — Play Integrity API: IntegrityChecker.kt, 24h DataStore cache, non-dismissible block dialog, backend verify endpoint
+- [x] 07-03-PLAN.md — HTTPS certificate pinning: CertificatePinner on both OkHttp clients, release-only guard, BuildConfig pin source
 
 ## Progress
 
@@ -156,6 +156,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Admin Dashboard | 5/5 | Complete    | 2026-03-15 |
 | 3. Android Catalog and Auth | 5/5 | Complete    | 2026-03-15 |
 | 4. Android Encryption Layer | 2/2 | Complete    | 2026-03-15 |
-| 5. License Enforcement | 2/3 | Complete    | 2026-03-15 |
+| 5. License Enforcement | 3/3 | Complete    | 2026-03-15 |
 | 6. Navigation Experience | 3/3 | Complete    | 2026-03-15 |
 | 7. Security Hardening and Flavor Scaffold | 3/3 | Complete    | 2026-03-15 |
