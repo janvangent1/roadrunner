@@ -53,6 +53,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -106,6 +107,9 @@ dependencies {
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+
+    // Core library desugaring for java.time on API 24+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling")
