@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-admin-dashboard-05-PLAN.md
-last_updated: "2026-03-15T06:24:24.811Z"
+stopped_at: Completed 03-android-catalog-and-auth-01-PLAN.md
+last_updated: "2026-03-15T06:55:35.590Z"
 last_activity: "2026-03-14 — Plan 01-02 complete: Auth subsystem (register/login/google/refresh/logout), JWT middleware"
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 14
+  completed_plans: 10
   percent: 50
 ---
 
@@ -57,6 +57,7 @@ Progress: [█████░░░░░] 50%
 | Phase 02-admin-dashboard P03 | 2 | 2 tasks | 7 files |
 | Phase 02-admin-dashboard P04 | 2 | 2 tasks | 2 files |
 | Phase 02-admin-dashboard P05 | 3 | 2 tasks | 2 files |
+| Phase 03-android-catalog-and-auth P01 | 14 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,10 @@ Recent decisions affecting current work:
 - [Phase 02-admin-dashboard]: apiFetch('/routes/:id') (public endpoint) used to load route with waypoints — no dedicated admin single-route GET
 - [Phase 02-admin-dashboard]: License loaded by fetching all via getAdminLicenses() and filtering by id in client — no GET /admin/licenses/:id
 - [Phase 02-admin-dashboard]: Revoke toggle: updateLicense({ revoked: \!license.revokedAt }); local state updated from API response for immediate status reflect
+- [Phase 03-android-catalog-and-auth]: Kotlin 2.0 requires org.jetbrains.kotlin.plugin.compose plugin; composeOptions block removed
+- [Phase 03-android-catalog-and-auth]: Theme.AppCompat.Light.NoActionBar used for Activity window theme; Compose handles visual theming via RoadrunnerTheme
+- [Phase 03-android-catalog-and-auth]: osmdroidTileCache set to filesDir (not cacheDir); androidx.preference:preference-ktx added for Configuration.load()
+- [Phase 03-android-catalog-and-auth]: Launcher icon refs removed from AndroidManifest; icon assets deferred to Phase 7 branding
 
 ### Pending Todos
 
@@ -104,6 +109,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T06:20:07.950Z
-Stopped at: Completed 02-admin-dashboard-05-PLAN.md
+Last session: 2026-03-15T06:55:35.586Z
+Stopped at: Completed 03-android-catalog-and-auth-01-PLAN.md
 Resume file: None

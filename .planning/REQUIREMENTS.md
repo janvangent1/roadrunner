@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can create an account with email and password
-- [ ] **AUTH-02**: User can sign in with Google (one-tap Android sign-in)
-- [ ] **AUTH-03**: User session persists across app restarts without re-login
-- [ ] **AUTH-04**: User can sign out
+- [x] **AUTH-01**: User can create an account with email and password
+- [x] **AUTH-02**: User can sign in with Google (one-tap Android sign-in)
+- [x] **AUTH-03**: User session persists across app restarts without re-login
+- [x] **AUTH-04**: User can sign out
 
 ### Route Catalog
 
@@ -116,10 +116,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 3 | Pending |
-| AUTH-02 | Phase 3 | Pending |
-| AUTH-03 | Phase 3 | Pending |
-| AUTH-04 | Phase 3 | Pending |
+| AUTH-01 | Phase 3 | Complete |
+| AUTH-02 | Phase 3 | Complete |
+| AUTH-03 | Phase 3 | Complete |
+| AUTH-04 | Phase 3 | Complete |
 | CATA-01 | Phase 3 | Pending |
 | CATA-02 | Phase 3 | Pending |
 | CATA-03 | Phase 3 | Pending |
