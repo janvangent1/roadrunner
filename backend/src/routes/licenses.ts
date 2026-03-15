@@ -91,6 +91,45 @@ async function licenseHandlersPlugin(fastify: FastifyInstance): Promise<void> {
 
     return buildSessionResponse(fastify, reply, userId, routeId, expiresAtIso, license.type);
   });
+
+  /**
+   * GET /api/v1/licenses/my
+   * Return all non-revoked licenses for the authenticated user.
+   *
+   * Returns expired licenses too — client needs them for display purposes.
+   * No Redis caching — this is a display endpoint, not the hot security path.
+   */
+  fastify.get('/my', {
+    preHandler: [requireAuth],
+  }, async (request, reply) => {
+    const userId = (request.user as { sub: string }).sub;
+
+    const licenses = await prisma.license.findMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      select: {
+        id: true,
+        routeId: true,
+        type: true,
+        expiresAt: true,
+        revokedAt: true,
+        createdAt: true,
+      },
+    });
+
+    const mapped = licenses.map((l) => ({
+      id: l.id,
+      routeId: l.routeId,
+      type: l.type,
+      expiresAt: l.expiresAt ? l.expiresAt.toISOString() : null,
+      revokedAt: l.revokedAt ? l.revokedAt.toISOString() : null,
+      createdAt: l.createdAt.toISOString(),
+    }));
+
+    return reply.code(200).send(mapped);
+  });
 }
 
 /**
