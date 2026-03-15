@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 06-navigation-experience-03-PLAN.md
-last_updated: "2026-03-15T13:16:32.129Z"
+stopped_at: Completed 07-security-hardening-and-flavor-scaffold-03-PLAN.md
+last_updated: "2026-03-15T13:27:13.854Z"
 last_activity: "2026-03-15 — Plan 03-04 complete: Route data layer (RouteDtos, ApiService, RouteRepository), CatalogScreen with pull-to-refresh and license badges, MyRoutesScreen"
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 22
-  completed_plans: 22
+  total_plans: 25
+  completed_plans: 23
   percent: 93
 ---
 
@@ -69,6 +69,7 @@ Progress: [█████████░] 93%
 | Phase 06-navigation-experience P01 | 4 | 2 tasks | 5 files |
 | Phase 06-navigation-experience P02 | 4 | 2 tasks | 2 files |
 | Phase 06-navigation-experience P03 | 4 | 2 tasks | 4 files |
+| Phase 07-security-hardening-and-flavor-scaffold P03 | 525680 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,7 @@ Recent decisions affecting current work:
 - [Phase 06-navigation-experience]: updateMapLocation is a no-op: MyLocationNewOverlay.enableFollowLocation() handles auto-centering; no manual map controller call needed
 - [Phase 06-navigation-experience]: TileCacheWorker is a plain CoroutineWorker (not Hilt-injected) — WorkManager creates workers directly
 - [Phase 06-navigation-experience]: isTilesCached uses loose heuristic (zoom 10 dir non-empty) — per-route tracking is v2 concern
+- [Phase 07-security-hardening-and-flavor-scaffold]: buildCertificatePinner() returns null in DEBUG and a CertificatePinner in release — single control point avoids duplication; pin applied to both OkHttp clients; TileCacheWorker excluded
 
 ### Pending Todos
 
@@ -148,6 +150,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T13:13:14.914Z
-Stopped at: Completed 06-navigation-experience-03-PLAN.md
+Last session: 2026-03-15T13:27:13.850Z
+Stopped at: Completed 07-security-hardening-and-flavor-scaffold-03-PLAN.md
 Resume file: None
