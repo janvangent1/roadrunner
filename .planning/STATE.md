@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-android-encryption-layer-01-PLAN.md
-last_updated: "2026-03-15T07:37:37.457Z"
+stopped_at: Completed 04-android-encryption-layer-02-PLAN.md
+last_updated: "2026-03-15T07:40:53.237Z"
 last_activity: "2026-03-15 — Plan 03-04 complete: Route data layer (RouteDtos, ApiService, RouteRepository), CatalogScreen with pull-to-refresh and license badges, MyRoutesScreen"
 progress:
   total_phases: 7
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
   percent: 93
 ---
 
@@ -63,6 +63,7 @@ Progress: [█████████░] 93%
 | Phase 03-android-catalog-and-auth P04 | 5 | 2 tasks | 10 files |
 | Phase 03-android-catalog-and-auth P05 | 2 | 2 tasks | 4 files |
 | Phase 04-android-encryption-layer P01 | 2 | 2 tasks | 2 files |
+| Phase 04-android-encryption-layer P02 | 2 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,9 @@ Recent decisions affecting current work:
 - [Phase 04-android-encryption-layer]: Keyset seeding: BinaryKeysetReader + CleartextKeysetHandle + JsonKeysetWriter to pre-populate SharedPrefs before AndroidKeysetManager wraps with hardware-backed Keystore master key
 - [Phase 04-android-encryption-layer]: TINK_KEYSET_B64 is debug-only buildConfigField; release key delivery deferred to Phase 7 (v2)
 - [Phase 04-android-encryption-layer]: StreamingAeadConfig.register() required (not AeadConfig.register()) for AES256_GCM_HKDF_4KB key type family
+- [Phase 04-android-encryption-layer]: RouteDetailViewModel exposes routeRepository and routeId as public vals for composable pass-through to OsmPreviewMap
+- [Phase 04-android-encryption-layer]: getDecryptedGpx() auto-triggers downloadAndStoreGpx() if .enc absent — single entry point for all call sites
+- [Phase 04-android-encryption-layer]: OsmPreviewMap falls back silently on GPX failure (logs warning, shows region marker) — no crash path
 
 ### Pending Todos
 
@@ -125,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T07:37:37.453Z
-Stopped at: Completed 04-android-encryption-layer-01-PLAN.md
+Last session: 2026-03-15T07:40:53.233Z
+Stopped at: Completed 04-android-encryption-layer-02-PLAN.md
 Resume file: None
