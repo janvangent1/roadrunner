@@ -106,7 +106,7 @@ dependencies {
     implementation("com.google.crypto.tink:tink-android:1.15.0")
 
     // GPX parsing — used after in-memory decryption of encrypted GPX files
-    implementation("io.ticofab.android-gpx-parser:android-gpx-parser:2.3.0")
+    implementation("com.github.ticofab:android-gpx-parser:2.3.0")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")

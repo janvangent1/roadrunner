@@ -48,9 +48,13 @@ fun OsmPreviewMap(
                 val gpxParser = GPXParser()
                 val gpx = gpxParser.parse(ByteArrayInputStream(bytes))
                 polylinePoints = gpx.tracks
-                    .flatMap { it.segments }
-                    .flatMap { it.points }
-                    .map { GeoPoint(it.latitude, it.longitude) }
+                    .flatMap { track -> track.trackSegments }
+                    .flatMap { segment -> segment.trackPoints }
+                    .mapNotNull { point ->
+                        val lat = point.latitude ?: return@mapNotNull null
+                        val lon = point.longitude ?: return@mapNotNull null
+                        GeoPoint(lat, lon)
+                    }
             }
             .onFailure { e ->
                 android.util.Log.w("OsmPreviewMap", "GPX unavailable: ${e.message}")

@@ -2,6 +2,7 @@ package com.roadrunner.app.data.remote
 
 import com.roadrunner.app.data.remote.dto.LicenseCheckRequest
 import com.roadrunner.app.data.remote.dto.LicenseCheckResponse
+import com.roadrunner.app.data.remote.dto.LicenseDto
 import com.roadrunner.app.data.remote.dto.RouteDto
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -21,6 +22,9 @@ interface ApiService {
 
     @POST("api/v1/licenses/check")
     suspend fun checkLicense(@Body body: LicenseCheckRequest): Response<LicenseCheckResponse>
+
+    @GET("api/v1/licenses/my")
+    suspend fun getMyLicenses(): Response<List<LicenseDto>>
 
     @Streaming
     @GET("api/v1/routes/{id}/gpx")
