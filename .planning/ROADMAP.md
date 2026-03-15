@@ -104,7 +104,12 @@ Plans:
   2. A user whose license expires during an active navigation session continues navigating uninterrupted for up to 1 hour; after that hour, navigation stops and the user must renew before starting a new session
   3. Starting a new navigation session after license expiry is blocked even if the device clock has been tampered with (validation uses server-issued timestamp)
   4. The route catalog, route detail page, and "My Routes" screen all display accurate license type and expiry date/time for each owned route
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Backend GET /licenses/my endpoint, LicenseDtos.kt, ApiService.getMyLicenses, LicenseRepository with cache
+- [ ] 05-02-PLAN.md — NavigationSessionManager, NavigationScreen placeholder, ExpiryDialog, Start Navigation wiring, NavGraph
+- [ ] 05-03-PLAN.md — License display refactor: RouteRepository, CatalogViewModel, RouteDetailViewModel use LicenseRepository cache
 
 ### Phase 6: Navigation Experience
 **Goal**: The navigation screen is fully functional for offroad motorcycle use: real-time GPS position, ride stats HUD, off-route warning, waypoint pins, and offline map tiles all work without a cell signal.
@@ -141,6 +146,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Admin Dashboard | 5/5 | Complete    | 2026-03-15 |
 | 3. Android Catalog and Auth | 5/5 | Complete    | 2026-03-15 |
 | 4. Android Encryption Layer | 2/2 | Complete    | 2026-03-15 |
-| 5. License Enforcement | 0/? | Not started | - |
+| 5. License Enforcement | 0/3 | Not started | - |
 | 6. Navigation Experience | 0/? | Not started | - |
 | 7. Security Hardening and Flavor Scaffold | 0/? | Not started | - |
