@@ -49,10 +49,13 @@ export default function RoutesPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Routes</h1>
-        <Button asChild>
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Routes</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage and publish motorcycle routes</p>
+        </div>
+        <Button asChild className="bg-primary hover:bg-primary/90 text-white font-medium">
           <Link href="/routes/new">Upload route</Link>
         </Button>
       </div>
@@ -60,54 +63,71 @@ export default function RoutesPage() {
       {loading ? (
         <p className="text-muted-foreground text-sm">Loading...</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Region</TableHead>
-              <TableHead>Difficulty</TableHead>
-              <TableHead>Distance</TableHead>
-              <TableHead>Published</TableHead>
-              <TableHead className="w-40">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {routes.map((route) => (
-              <TableRow key={route.id}>
-                <TableCell className="font-medium">{route.title}</TableCell>
-                <TableCell>{route.region}</TableCell>
-                <TableCell>{route.difficulty}</TableCell>
-                <TableCell>{route.distanceKm} km</TableCell>
-                <TableCell>
-                  <Badge variant={route.published ? 'default' : 'secondary'}>
-                    {route.published ? 'Published' : 'Draft'}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/routes/${route.id}`}>Edit</Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => togglePublished(route)}
-                    >
-                      {route.published ? 'Unpublish' : 'Publish'}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(route)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </TableCell>
+        <div className="rounded-lg border border-border overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border bg-secondary/50 hover:bg-secondary/50">
+                <TableHead className="text-muted-foreground font-medium">Title</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Region</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Difficulty</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Distance</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Status</TableHead>
+                <TableHead className="w-40 text-muted-foreground font-medium">Actions</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {routes.map((route) => (
+                <TableRow key={route.id} className="border-border hover:bg-secondary/50 transition-colors">
+                  <TableCell className="font-medium text-foreground">{route.title}</TableCell>
+                  <TableCell className="text-muted-foreground">{route.region}</TableCell>
+                  <TableCell className="text-muted-foreground">{route.difficulty}</TableCell>
+                  <TableCell className="text-muted-foreground">{route.distanceKm} km</TableCell>
+                  <TableCell>
+                    {route.published ? (
+                      <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">
+                        Published
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-muted-foreground">
+                        Draft
+                      </Badge>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" asChild
+                        className="border-border text-foreground hover:bg-secondary hover:text-foreground">
+                        <Link href={`/routes/${route.id}`}>Edit</Link>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => togglePublished(route)}
+                        className="border-border text-foreground hover:bg-secondary hover:text-foreground"
+                      >
+                        {route.published ? 'Unpublish' : 'Publish'}
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(route)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+              {routes.length === 0 && !loading && (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
+                    No routes yet. Upload your first route.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   );

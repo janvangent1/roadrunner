@@ -47,66 +47,88 @@ export default function LicensesPage() {
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Licenses</h1>
-        <Button asChild><Link href="/licenses/new">Grant License</Link></Button>
+        <div>
+          <h1 className="text-2xl font-semibold text-foreground">Licenses</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage user route access licenses</p>
+        </div>
+        <Button asChild className="bg-primary hover:bg-primary/90 text-white font-medium">
+          <Link href="/licenses/new">Grant license</Link>
+        </Button>
       </div>
 
       <Input
         placeholder="Filter by email or route name..."
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
-        className="max-w-sm"
+        className="max-w-sm bg-secondary border-border text-foreground placeholder:text-muted-foreground"
       />
 
       {loading ? (
         <p className="text-muted-foreground text-sm">Loading...</p>
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User Email</TableHead>
-              <TableHead>Route</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Expires At</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="w-24">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filtered.map((license) => {
-              const status = getLicenseStatus(license);
-              return (
-                <TableRow key={license.id}>
-                  <TableCell>{license.user.email}</TableCell>
-                  <TableCell>{license.route.title}</TableCell>
-                  <TableCell>{formatLicenseType(license.type)}</TableCell>
-                  <TableCell>
-                    {license.expiresAt
-                      ? new Date(license.expiresAt).toLocaleDateString()
-                      : '—'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={status.variant}>{status.label}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm" asChild>
-                      <Link href={`/licenses/${license.id}`}>Edit</Link>
-                    </Button>
+        <div className="rounded-lg border border-border overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-border bg-secondary/50 hover:bg-secondary/50">
+                <TableHead className="text-muted-foreground font-medium">User Email</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Route</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Type</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Expires At</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Status</TableHead>
+                <TableHead className="w-24 text-muted-foreground font-medium">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((license) => {
+                const status = getLicenseStatus(license);
+                return (
+                  <TableRow key={license.id} className="border-border hover:bg-secondary/50 transition-colors">
+                    <TableCell className="text-foreground">{license.user.email}</TableCell>
+                    <TableCell className="text-muted-foreground">{license.route.title}</TableCell>
+                    <TableCell className="text-muted-foreground">{formatLicenseType(license.type)}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {license.expiresAt
+                        ? new Date(license.expiresAt).toLocaleDateString()
+                        : '\u2014'}
+                    </TableCell>
+                    <TableCell>
+                      {status.variant === 'default' && (
+                        <Badge className="bg-success/15 text-success border-success/30 hover:bg-success/15">
+                          {status.label}
+                        </Badge>
+                      )}
+                      {status.variant === 'destructive' && (
+                        <Badge className="bg-destructive/15 text-destructive border-destructive/30 hover:bg-destructive/15">
+                          {status.label}
+                        </Badge>
+                      )}
+                      {status.variant === 'secondary' && (
+                        <Badge variant="secondary" className="text-muted-foreground">
+                          {status.label}
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm" asChild
+                        className="border-border text-foreground hover:bg-secondary hover:text-foreground">
+                        <Link href={`/licenses/${license.id}`}>Edit</Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {filtered.length === 0 && !loading && (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-12">
+                    No licenses found.
                   </TableCell>
                 </TableRow>
-              );
-            })}
-            {filtered.length === 0 && !loading && (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                  No licenses found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       )}
     </div>
   );
