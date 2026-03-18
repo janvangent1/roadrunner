@@ -193,6 +193,14 @@ class RoadrunnerLauncher(tk.Tk):
         )
         self._btn_rebuild.pack(side="left", fill="x", expand=True, padx=(4, 0))
 
+        row2b = tk.Frame(btn_frame, bg=BG)
+        row2b.pack(fill="x", pady=(6, 0))
+        self._btn_rebuild_all = self._make_button(
+            row2b, "⟳  Rebuild All  (Docker + Android app)",
+            SURFACE2, ORANGE, self._action_rebuild_all,
+        )
+        self._btn_rebuild_all.pack(fill="x")
+
         row3 = tk.Frame(btn_frame, bg=BG)
         row3.pack(fill="x", pady=(6, 0))
 
@@ -313,7 +321,7 @@ class RoadrunnerLauncher(tk.Tk):
         self._busy = busy
         state = "disabled" if busy else "normal"
         for btn in [self._btn_full, self._btn_quick, self._btn_rebuild,
-                    self._btn_stop, self._btn_browser]:
+                    self._btn_rebuild_all, self._btn_stop, self._btn_browser]:
             btn.config(state=state)
         if not busy:
             self._statusbar.config(text="Done.")
@@ -382,6 +390,24 @@ class RoadrunnerLauncher(tk.Tk):
             self._log_ok("Rebuild complete.")
         except Exception as e:
             self._log_err(f"Rebuild failed: {e}")
+        finally:
+            self.after(0, lambda: self._set_busy(False))
+
+    # Rebuild All ───────────────────────────────────────────
+
+    def _action_rebuild_all(self):
+        self._run_task(self._task_rebuild_all)
+
+    def _task_rebuild_all(self):
+        try:
+            self._ensure_docker()
+            self._docker_compose_up(rebuild=True)
+            self._wait_for_api()
+            self._run_migrations()
+            self._build_and_install()
+            self._log_ok("Rebuild All complete.")
+        except Exception as e:
+            self._log_err(f"Rebuild All failed: {e}")
         finally:
             self.after(0, lambda: self._set_busy(False))
 
