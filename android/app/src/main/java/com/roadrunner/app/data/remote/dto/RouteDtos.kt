@@ -27,6 +27,7 @@ data class RouteDto(
     val waypoints: List<WaypointDto> = emptyList(),
     val centerLat: Double? = null,
     val centerLng: Double? = null,
+    val routePoints: List<List<Double>>? = null,  // [[lat,lng], …] simplified polyline
 )
 
 data class LicenseCheckRequest(

@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.LibraryBooks
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.rounded.Map
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,6 +27,9 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +38,8 @@ import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.roadrunner.app.ui.theme.OrangePrimary
 import com.roadrunner.app.ui.theme.SurfaceDark
+
+private enum class ViewMode { LIST, MAP }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,6 +51,7 @@ fun CatalogScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val pullRefreshState = rememberPullToRefreshState()
+    var viewMode by remember { mutableStateOf(ViewMode.LIST) }
 
     Scaffold(
         topBar = {
@@ -70,6 +78,14 @@ fun CatalogScreen(
                     actionIconContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 actions = {
+                    IconButton(onClick = {
+                        viewMode = if (viewMode == ViewMode.LIST) ViewMode.MAP else ViewMode.LIST
+                    }) {
+                        Icon(
+                            imageVector = if (viewMode == ViewMode.LIST) Icons.Rounded.Map else Icons.AutoMirrored.Filled.List,
+                            contentDescription = if (viewMode == ViewMode.LIST) "Map view" else "List view",
+                        )
+                    }
                     IconButton(onClick = onNavigateToMyRoutes) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.LibraryBooks,
@@ -138,6 +154,14 @@ fun CatalogScreen(
                                 color = MaterialTheme.colorScheme.error,
                             )
                         }
+                    }
+                }
+                viewMode == ViewMode.MAP -> {
+                    Box(Modifier.fillMaxSize()) {
+                        MapOverviewScreen(
+                            routes = uiState.routes,
+                            onRouteClick = onRouteClick,
+                        )
                     }
                 }
                 else -> {
