@@ -1,4 +1,4 @@
-import type { Route, Waypoint, License, LicenseType, WaypointType } from '@/types';
+import type { Route, Waypoint, License, LicenseType, WaypointType, AdminStats } from '@/types';
 
 const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1';
 
@@ -98,3 +98,7 @@ export { apiFetch };
 
 // Suppress unused import warning for WaypointType (used by consumers of this module via re-export context)
 export type { WaypointType };
+
+export async function getAdminStats(): Promise<AdminStats> {
+  return apiFetch('/admin/stats');
+}

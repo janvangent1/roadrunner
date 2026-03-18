@@ -24,6 +24,11 @@ export interface Route {
   createdAt: string;
   updatedAt: string;
   waypoints?: Waypoint[];
+  priceDayPass?: number | null;
+  priceMultiDay?: number | null;
+  pricePermanent?: number | null;
+  viewCount?: number;
+  navigationCount?: number;
 }
 
 export interface License {
@@ -41,4 +46,34 @@ export interface License {
 export interface ApiError {
   error: string;
   details?: unknown;
+}
+
+export interface AdminStats {
+  users: { total: number };
+  routes: { total: number; published: number; unpublished: number };
+  licenses: {
+    total: number;
+    active: number;
+    expired: number;
+    revoked: number;
+    byType: Record<string, number>;
+  };
+  topRoutes: Array<{
+    id: string;
+    title: string;
+    region: string;
+    distanceKm: number;
+    viewCount: number;
+    navigationCount: number;
+    licenseCount: number;
+  }>;
+  recentLicenses: Array<{
+    id: string;
+    type: string;
+    expiresAt: string | null;
+    revokedAt: string | null;
+    createdAt: string;
+    user: { email: string };
+    route: { title: string };
+  }>;
 }

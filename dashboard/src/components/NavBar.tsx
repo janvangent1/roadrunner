@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { clearToken } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
-import { Route, FileText, LogOut } from 'lucide-react';
+import { Route, FileText, LogOut, BarChart2 } from 'lucide-react';
 
 export function NavBar() {
   const pathname = usePathname();
@@ -13,6 +13,7 @@ export function NavBar() {
   const navLinks = [
     { href: '/routes', label: 'Routes', icon: Route },
     { href: '/licenses', label: 'Licenses', icon: FileText },
+    { href: '/stats', label: 'Stats', icon: BarChart2 },
   ];
 
   return (

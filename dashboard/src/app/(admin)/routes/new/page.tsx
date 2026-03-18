@@ -36,6 +36,9 @@ const schema = z.object({
   terrainType: z.string().min(1, 'Terrain type required'),
   region: z.string().min(1, 'Region required'),
   estimatedDurationMinutes: z.coerce.number().int().positive('Must be positive'),
+  priceDayPass: z.coerce.number().positive().optional(),
+  priceMultiDay: z.coerce.number().positive().optional(),
+  pricePermanent: z.coerce.number().positive().optional(),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -71,6 +74,9 @@ export default function NewRoutePage() {
     formData.append('terrainType', values.terrainType);
     formData.append('region', values.region);
     formData.append('estimatedDurationMinutes', String(values.estimatedDurationMinutes));
+    if (values.priceDayPass)   formData.append('priceDayPass',   String(values.priceDayPass));
+    if (values.priceMultiDay)  formData.append('priceMultiDay',  String(values.priceMultiDay));
+    if (values.pricePermanent) formData.append('pricePermanent', String(values.pricePermanent));
 
     if (waypoints.length > 0) {
       const waypointsData = waypoints.map((wp, i) => ({
@@ -205,6 +211,54 @@ export default function NewRoutePage() {
                 </FormItem>
               )}
             />
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">Pricing</h2>
+              <p className="text-xs text-muted-foreground">Set the price for each license type. Leave blank to hide that option.</p>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="priceDayPass"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Day Pass (€)</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="0" step="0.01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="priceMultiDay"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Multi-Day (€)</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="0" step="0.01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="pricePermanent"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Permanent (€)</FormLabel>
+                    <FormControl>
+                      <Input type="number" min="0" step="0.01" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
           <WaypointEditor value={waypoints} onChange={setWaypoints} />

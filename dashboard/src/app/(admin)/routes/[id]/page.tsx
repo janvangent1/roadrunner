@@ -24,6 +24,9 @@ const schema = z.object({
   region: z.string().min(1, 'Required'),
   estimatedDurationMinutes: z.coerce.number().int().positive(),
   published: z.boolean(),
+  priceDayPass: z.coerce.number().positive().optional().or(z.literal('')),
+  priceMultiDay: z.coerce.number().positive().optional().or(z.literal('')),
+  pricePermanent: z.coerce.number().positive().optional().or(z.literal('')),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -49,6 +52,9 @@ export default function EditRoutePage() {
           region: route.region,
           estimatedDurationMinutes: route.estimatedDurationMinutes,
           published: route.published,
+          priceDayPass: route.priceDayPass ?? undefined,
+          priceMultiDay: route.priceMultiDay ?? undefined,
+          pricePermanent: route.pricePermanent ?? undefined,
         });
         setComputedDistance(route.distanceKm);
         if (route.waypoints) {
@@ -79,6 +85,9 @@ export default function EditRoutePage() {
         region: values.region,
         estimatedDurationMinutes: values.estimatedDurationMinutes,
         published: values.published,
+        priceDayPass: values.priceDayPass || null,
+        priceMultiDay: values.priceMultiDay || null,
+        pricePermanent: values.pricePermanent || null,
       });
       toast.success('Route updated');
     } catch (e) {
@@ -185,6 +194,56 @@ export default function EditRoutePage() {
           </div>
         </form>
       </Form>
+
+      <div className="border-t pt-6 space-y-3">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">Pricing</h2>
+          <p className="text-xs text-muted-foreground">Set the price for each license type. Leave blank to hide that option.</p>
+        </div>
+        <Form {...form}>
+          <div className="grid grid-cols-3 gap-4">
+            <FormField
+              control={form.control}
+              name="priceDayPass"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Day Pass (€)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min="0" step="0.01" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="priceMultiDay"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Multi-Day (€)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min="0" step="0.01" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pricePermanent"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Permanent (€)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min="0" step="0.01" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </Form>
+      </div>
 
       <div className="border-t pt-6 space-y-4">
         <h2 className="text-lg font-medium">Waypoints / POIs</h2>
