@@ -29,18 +29,66 @@ async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
   });
 }
 
-/** Extract center coordinates from GPX XML */
-function extractGpxCenter(gpxBuffer: Buffer): { centerLat: number; centerLng: number } | null {
+/** Haversine distance in km between two lat/lng points */
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/** Extract lat/lng pairs from GPX XML, compute distance, return simplified polyline */
+function extractGpxData(gpxBuffer: Buffer): {
+  centerLat: number | null;
+  centerLng: number | null;
+  distanceKm: number;
+  routePoints: string; // JSON [[lat,lng],…]
+} {
   try {
     const gpxText = gpxBuffer.toString('utf-8');
-    const latMatches = [...gpxText.matchAll(/lat="([^"]+)"/g)].map(m => parseFloat(m[1]));
-    const lngMatches = [...gpxText.matchAll(/lon="([^"]+)"/g)].map(m => parseFloat(m[1]));
-    if (latMatches.length === 0 || lngMatches.length === 0) return null;
-    const centerLat = latMatches.reduce((a, b) => a + b, 0) / latMatches.length;
-    const centerLng = lngMatches.reduce((a, b) => a + b, 0) / lngMatches.length;
-    return { centerLat, centerLng };
+    const latMatches = [...gpxText.matchAll(/lat="([^"]+)"/g)].map((m) => parseFloat(m[1]));
+    const lngMatches = [...gpxText.matchAll(/lon="([^"]+)"/g)].map((m) => parseFloat(m[1]));
+
+    if (latMatches.length === 0 || lngMatches.length === 0) {
+      return { centerLat: null, centerLng: null, distanceKm: 0, routePoints: '[]' };
+    }
+
+    // Compute total distance from consecutive points
+    let totalKm = 0;
+    for (let i = 1; i < latMatches.length; i++) {
+      totalKm += haversineKm(latMatches[i - 1], lngMatches[i - 1], latMatches[i], lngMatches[i]);
+    }
+
+    // Downsample to at most 150 points for the polyline
+    const count = latMatches.length;
+    const step = Math.max(1, Math.floor(count / 150));
+    const points: [number, number][] = [];
+    for (let i = 0; i < count; i += step) {
+      points.push([Math.round(latMatches[i] * 1e6) / 1e6, Math.round(lngMatches[i] * 1e6) / 1e6]);
+    }
+    // Always include last point
+    const lastLat = latMatches[count - 1];
+    const lastLng = lngMatches[count - 1];
+    if (points[points.length - 1][0] !== lastLat || points[points.length - 1][1] !== lastLng) {
+      points.push([Math.round(lastLat * 1e6) / 1e6, Math.round(lastLng * 1e6) / 1e6]);
+    }
+
+    const centerLat = latMatches.reduce((a, b) => a + b, 0) / count;
+    const centerLng = lngMatches.reduce((a, b) => a + b, 0) / count;
+
+    return {
+      centerLat: Math.round(centerLat * 1e6) / 1e6,
+      centerLng: Math.round(centerLng * 1e6) / 1e6,
+      distanceKm: Math.round(totalKm * 10) / 10,
+      routePoints: JSON.stringify(points),
+    };
   } catch {
-    return null;
+    return { centerLat: null, centerLng: null, distanceKm: 0, routePoints: '[]' };
   }
 }
 
@@ -74,10 +122,10 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     const distanceKmStr = fields['distanceKm']?.value;
     const waypointsStr = fields['waypoints']?.value;
 
-    // Validate required fields
-    if (!title || !difficulty || !terrainType || !region || !estimatedDurationMinutesStr || !distanceKmStr) {
+    // Validate required fields (distanceKm is optional — auto-computed from GPX)
+    if (!title || !difficulty || !terrainType || !region || !estimatedDurationMinutesStr) {
       return reply.code(400).send({
-        error: 'Missing required fields: title, difficulty, terrainType, region, estimatedDurationMinutes, distanceKm',
+        error: 'Missing required fields: title, difficulty, terrainType, region, estimatedDurationMinutes',
       });
     }
 
@@ -86,10 +134,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     }
 
     const estimatedDurationMinutes = parseInt(estimatedDurationMinutesStr, 10);
-    const distanceKm = parseFloat(distanceKmStr);
 
-    if (isNaN(estimatedDurationMinutes) || isNaN(distanceKm)) {
-      return reply.code(400).send({ error: 'estimatedDurationMinutes must be an integer, distanceKm must be a number' });
+    if (isNaN(estimatedDurationMinutes)) {
+      return reply.code(400).send({ error: 'estimatedDurationMinutes must be an integer' });
     }
 
     // Parse waypoints if provided
@@ -131,8 +178,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     // Encrypt GPX in memory — plaintext never written to disk or stored
     const gpxEncrypted = await encryptGpx(gpxBuffer, Buffer.from(routeId));
 
-    // Extract center coordinates from GPX for map preview
-    const center = extractGpxCenter(gpxBuffer);
+    // Extract center, distance, and simplified polyline from GPX
+    // GPX-computed distanceKm always wins; distanceKmStr accepted for API compat but not used for storage
+    const gpxData = extractGpxData(gpxBuffer);
 
     // Create route (and waypoints) in a single transaction
     const route = await prisma.$transaction(async (tx) => {
@@ -145,10 +193,11 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
           terrainType,
           region,
           estimatedDurationMinutes,
-          distanceKm,
+          distanceKm: gpxData.distanceKm,
           published: false,
-          centerLat: center?.centerLat ?? null,
-          centerLng: center?.centerLng ?? null,
+          centerLat: gpxData.centerLat,
+          centerLng: gpxData.centerLng,
+          routePoints: gpxData.routePoints,
           gpxEncrypted,
           ...(waypointsData && {
             waypoints: {
@@ -174,6 +223,7 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
           published: true,
           centerLat: true,
           centerLng: true,
+          routePoints: true,
           createdAt: true,
           updatedAt: true,
           // gpxEncrypted intentionally excluded from response
@@ -239,6 +289,7 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
       gpxEncrypted?: Buffer;
       centerLat?: number | null;
       centerLng?: number | null;
+      routePoints?: string | null;
     } = {};
 
     if (contentType.includes('multipart/form-data')) {
@@ -249,12 +300,12 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         const gpxBuffer = await streamToBuffer(data.file);
         updateData.gpxEncrypted = await encryptGpx(gpxBuffer, Buffer.from(id));
 
-        // Update center coordinates from the new GPX
-        const center = extractGpxCenter(gpxBuffer);
-        if (center) {
-          updateData.centerLat = center.centerLat;
-          updateData.centerLng = center.centerLng;
-        }
+        // Re-extract center, distance, and simplified polyline from the new GPX
+        const gpxData = extractGpxData(gpxBuffer);
+        updateData.centerLat = gpxData.centerLat;
+        updateData.centerLng = gpxData.centerLng;
+        updateData.distanceKm = gpxData.distanceKm;
+        updateData.routePoints = gpxData.routePoints;
 
         const fields = data.fields as Record<string, { value: string } | undefined>;
         if (fields['title']?.value) updateData.title = fields['title'].value;
@@ -314,6 +365,7 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         published: true,
         centerLat: true,
         centerLng: true,
+        routePoints: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -386,6 +438,7 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         published: true,
         centerLat: true,
         centerLng: true,
+        routePoints: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded

@@ -35,6 +35,7 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
         published: true,
         centerLat: true,
         centerLng: true,
+        routePoints: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -74,6 +75,7 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
         published: true,
         centerLat: true,
         centerLng: true,
+        routePoints: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded

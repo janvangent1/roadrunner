@@ -70,6 +70,7 @@ model Route {
   published                Boolean    @default(false)
   centerLat                Float?     @map("center_lat")
   centerLng                Float?     @map("center_lng")
+  routePoints              String?    @map("route_points")   // JSON: [[lat,lng],…] simplified polyline
   gpxEncrypted             Bytes?     @map("gpx_encrypted")
   waypoints                Waypoint[]
   licenses                 License[]
