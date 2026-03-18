@@ -47,6 +47,7 @@ import com.roadrunner.app.data.remote.dto.LicenseStatus
 import com.roadrunner.app.data.remote.dto.LicenseType
 import com.roadrunner.app.ui.theme.OrangePrimary
 import com.roadrunner.app.ui.theme.OutlineColor
+import com.roadrunner.app.ui.theme.SubtleText
 import com.roadrunner.app.ui.theme.SurfaceDark
 import java.time.Instant
 import java.time.ZoneId
@@ -162,7 +163,12 @@ fun RouteDetailScreen(
 
                     // Purchase options section (always shown)
                     item {
-                        PurchaseOptionsSection(modifier = Modifier.padding(16.dp))
+                        PurchaseOptionsSection(
+                            priceDayPass = route.priceDayPass,
+                            priceMultiDay = route.priceMultiDay,
+                            pricePermanent = route.pricePermanent,
+                            modifier = Modifier.padding(16.dp),
+                        )
                     }
 
                     // Start Navigation button
@@ -304,7 +310,12 @@ private fun LicenseStatusSection(
 }
 
 @Composable
-private fun PurchaseOptionsSection(modifier: Modifier = Modifier) {
+private fun PurchaseOptionsSection(
+    priceDayPass: Double?,
+    priceMultiDay: Double?,
+    pricePermanent: Double?,
+    modifier: Modifier = Modifier,
+) {
     Column(modifier) {
         Text(
             text = "PURCHASE OPTIONS",
@@ -322,19 +333,19 @@ private fun PurchaseOptionsSection(modifier: Modifier = Modifier) {
         ) {
             PurchaseOptionCard(
                 title = "Day Pass",
-                price = "€X.XX",
+                price = if (priceDayPass != null) "€${"%.2f".format(priceDayPass)}" else "Contact us",
                 description = "Valid 24 hours",
                 modifier = Modifier.weight(1f, fill = false),
             )
             PurchaseOptionCard(
-                title = "Multi-Day Rental",
-                price = "€X.XX",
+                title = "Multi-Day",
+                price = if (priceMultiDay != null) "€${"%.2f".format(priceMultiDay)}" else "Contact us",
                 description = "Select duration",
                 modifier = Modifier.weight(1f, fill = false),
             )
             PurchaseOptionCard(
                 title = "Permanent",
-                price = "€X.XX",
+                price = if (pricePermanent != null) "€${"%.2f".format(pricePermanent)}" else "Contact us",
                 description = "Own forever",
                 modifier = Modifier.weight(1f, fill = false),
             )
@@ -349,6 +360,7 @@ private fun PurchaseOptionCard(
     description: String,
     modifier: Modifier = Modifier,
 ) {
+    val hasPrice = price.startsWith("€")
     Card(
         modifier = modifier.padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(containerColor = SurfaceDark),
@@ -357,11 +369,24 @@ private fun PurchaseOptionCard(
         Column(Modifier.padding(12.dp)) {
             Text(title, style = MaterialTheme.typography.titleSmall)
             Spacer(Modifier.height(4.dp))
-            Text(price, style = MaterialTheme.typography.headlineSmall)
-            Text(description, style = MaterialTheme.typography.bodySmall)
+            if (hasPrice) {
+                Text(
+                    text = price,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = OrangePrimary,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                )
+            } else {
+                Text(
+                    text = price,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = SubtleText,
+                )
+            }
+            Text(description, style = MaterialTheme.typography.bodySmall, color = SubtleText)
             Spacer(Modifier.height(8.dp))
-            TextButton(onClick = { /* v1: manual licensing — no action */ }) {
-                Text("Contact to Purchase")
+            TextButton(onClick = { /* v1: manual licensing */ }) {
+                Text("Contact to Purchase", color = OrangePrimary)
             }
         }
     }

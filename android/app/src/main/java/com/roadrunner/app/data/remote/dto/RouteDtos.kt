@@ -27,6 +27,9 @@ data class RouteDto(
     val waypoints: List<WaypointDto> = emptyList(),
     val centerLat: Double? = null,
     val centerLng: Double? = null,
+    val priceDayPass: Double? = null,
+    val priceMultiDay: Double? = null,
+    val pricePermanent: Double? = null,
     val routePoints: List<List<Double>>? = null,  // [[lat,lng], …] simplified polyline
 )
 
