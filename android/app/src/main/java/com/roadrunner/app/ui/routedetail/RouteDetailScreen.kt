@@ -14,7 +14,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +30,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,10 +39,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.roadrunner.app.data.remote.dto.LicenseStatus
 import com.roadrunner.app.data.remote.dto.LicenseType
+import com.roadrunner.app.ui.theme.OrangePrimary
+import com.roadrunner.app.ui.theme.OutlineColor
+import com.roadrunner.app.ui.theme.SurfaceDark
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -71,7 +79,12 @@ fun RouteDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = SurfaceDark,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                ),
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -162,6 +175,10 @@ fun RouteDetailScreen(
                                 onClick = { viewModel.startNavigation { onStartNavigation(viewModel.routeId) } },
                                 enabled = canNavigate && !uiState.isStartingNavigation,
                                 modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = OrangePrimary,
+                                    contentColor = Color(0xFF0D0D0D),
+                                ),
                             ) {
                                 if (uiState.isStartingNavigation) {
                                     CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
@@ -217,55 +234,69 @@ private fun LicenseStatusSection(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier.padding(vertical = 8.dp)) {
-        Text("License Status", style = MaterialTheme.typography.titleMedium)
-        Spacer(Modifier.height(4.dp))
-
-        when (licenseStatus) {
-            LicenseStatus.AVAILABLE -> {
-                Text(
-                    "No license — contact us to purchase",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-            else -> {
-                // Show license type
-                val typeName = when (licenseType) {
-                    LicenseType.DAY_PASS -> "Day Pass"
-                    LicenseType.MULTI_DAY -> "Multi-Day Rental"
-                    LicenseType.PERMANENT -> "Permanent"
-                    null -> "Licensed"
-                }
-                Text(typeName, style = MaterialTheme.typography.bodyMedium)
-
-                // Show expiry date if present
-                if (expiresAt != null) {
-                    val formatter = DateTimeFormatter
-                        .ofPattern("dd MMM yyyy HH:mm", Locale.getDefault())
-                        .withZone(ZoneId.systemDefault())
-                    val formattedDate = try {
-                        formatter.format(Instant.parse(expiresAt))
-                    } catch (e: Exception) {
-                        expiresAt
-                    }
-                    Text(
-                        "Expires: $formattedDate",
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-
-                // Status-specific warning text
+        Text(
+            text = "LICENSE STATUS",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.12.em,
+                color = OrangePrimary,
+            ),
+        )
+        Spacer(Modifier.height(8.dp))
+        Card(
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = SurfaceDark),
+            border = androidx.compose.foundation.BorderStroke(1.dp, OutlineColor),
+        ) {
+            Column(Modifier.padding(12.dp)) {
                 when (licenseStatus) {
-                    LicenseStatus.EXPIRED -> Text(
-                        "License expired",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Red,
-                    )
-                    LicenseStatus.EXPIRING_SOON -> Text(
-                        "Expires soon",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color(0xFFE65100), // orange
-                    )
-                    else -> { /* no additional warning */ }
+                    LicenseStatus.AVAILABLE -> {
+                        Text(
+                            "No license — contact us to purchase",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                    else -> {
+                        // Show license type
+                        val typeName = when (licenseType) {
+                            LicenseType.DAY_PASS -> "Day Pass"
+                            LicenseType.MULTI_DAY -> "Multi-Day Rental"
+                            LicenseType.PERMANENT -> "Permanent"
+                            null -> "Licensed"
+                        }
+                        Text(typeName, style = MaterialTheme.typography.bodyMedium)
+
+                        // Show expiry date if present
+                        if (expiresAt != null) {
+                            val formatter = DateTimeFormatter
+                                .ofPattern("dd MMM yyyy HH:mm", Locale.getDefault())
+                                .withZone(ZoneId.systemDefault())
+                            val formattedDate = try {
+                                formatter.format(Instant.parse(expiresAt))
+                            } catch (e: Exception) {
+                                expiresAt
+                            }
+                            Text(
+                                "Expires: $formattedDate",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+
+                        // Status-specific warning text
+                        when (licenseStatus) {
+                            LicenseStatus.EXPIRED -> Text(
+                                "License expired",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Red,
+                            )
+                            LicenseStatus.EXPIRING_SOON -> Text(
+                                "Expires soon",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color(0xFFE65100), // orange
+                            )
+                            else -> { /* no additional warning */ }
+                        }
+                    }
                 }
             }
         }
@@ -275,7 +306,14 @@ private fun LicenseStatusSection(
 @Composable
 private fun PurchaseOptionsSection(modifier: Modifier = Modifier) {
     Column(modifier) {
-        Text("Purchase Options", style = MaterialTheme.typography.titleMedium)
+        Text(
+            text = "PURCHASE OPTIONS",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.12.em,
+                color = OrangePrimary,
+            ),
+        )
         Spacer(Modifier.height(8.dp))
 
         @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
@@ -311,7 +349,11 @@ private fun PurchaseOptionCard(
     description: String,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = modifier.padding(vertical = 4.dp)) {
+    Card(
+        modifier = modifier.padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceDark),
+        border = androidx.compose.foundation.BorderStroke(1.dp, OutlineColor),
+    ) {
         Column(Modifier.padding(12.dp)) {
             Text(title, style = MaterialTheme.typography.titleSmall)
             Spacer(Modifier.height(4.dp))

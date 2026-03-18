@@ -1,5 +1,6 @@
 package com.roadrunner.app.ui.auth
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,14 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material.icons.rounded.Navigation
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,8 +50,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.roadrunner.app.ui.theme.BackgroundDark
 import com.roadrunner.app.ui.theme.OrangePrimary
+import com.roadrunner.app.ui.theme.OutlineColor
+import com.roadrunner.app.ui.theme.SubtleText
+import com.roadrunner.app.ui.theme.SurfaceDark
 
 @Composable
 fun LoginScreen(
@@ -72,32 +82,47 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xFF1A0A00), Color(0xFF0D0D0D)),
-                ),
-            ),
-        contentAlignment = Alignment.Center,
+            .background(MaterialTheme.colorScheme.background),
     ) {
+        // Subtle orange radial glow at the top
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.radialGradient(
+                        listOf(Color(0x14FF6D00), Color.Transparent),
+                    ),
+                ),
+        )
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Brand header
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Logo section
             Box(
                 modifier = Modifier
-                    .size(72.dp)
-                    .background(OrangePrimary, CircleShape),
+                    .size(60.dp)
+                    .background(
+                        color = OrangePrimary.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    .border(
+                        border = BorderStroke(1.5.dp, OrangePrimary.copy(alpha = 0.4f)),
+                        shape = RoundedCornerShape(16.dp),
+                    ),
                 contentAlignment = Alignment.Center,
             ) {
-                Icon(
-                    imageVector = Icons.Rounded.Navigation,
-                    contentDescription = null,
-                    tint = Color(0xFF0D0D0D),
-                    modifier = Modifier.size(40.dp),
+                Text(
+                    text = "\u25CF",
+                    color = OrangePrimary,
+                    fontSize = 24.sp,
                 )
             }
 
@@ -105,113 +130,128 @@ fun LoginScreen(
 
             Text(
                 text = "ROADRUNNER",
-                style = MaterialTheme.typography.headlineMedium.copy(
+                style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = OrangePrimary,
-                    letterSpacing = androidx.compose.ui.unit.TextUnit(
-                        3f,
-                        androidx.compose.ui.unit.TextUnitType.Sp,
-                    ),
+                    letterSpacing = 0.15.em,
+                    fontSize = 22.sp,
                 ),
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "Route Navigation",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
+                fontSize = 12.sp,
+                color = OrangePrimary,
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // Email field
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = OrangePrimary,
-                    focusedLabelColor = OrangePrimary,
-                    cursorColor = OrangePrimary,
-                ),
-            )
+            // Login card
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = SurfaceDark),
+                border = BorderStroke(1.dp, OutlineColor),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    // Email field
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Email") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                            imeAction = ImeAction.Next,
+                        ),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = OrangePrimary,
+                            focusedLabelColor = OrangePrimary,
+                            cursorColor = OrangePrimary,
+                            unfocusedBorderColor = OutlineColor,
+                            unfocusedLabelColor = SubtleText,
+                        ),
+                    )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    // Password field
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Password") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                        ),
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(
+                                    imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                    contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = OrangePrimary,
+                            focusedLabelColor = OrangePrimary,
+                            cursorColor = OrangePrimary,
+                            unfocusedBorderColor = OutlineColor,
+                            unfocusedLabelColor = SubtleText,
+                        ),
+                    )
 
-            // Password field
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                ),
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                            contentDescription = if (passwordVisible) "Hide password" else "Show password",
+                    if (uiState is AuthUiState.Loading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(48.dp),
+                                color = OrangePrimary,
+                            )
+                        }
+                    } else {
+                        // Sign In button
+                        Button(
+                            onClick = { viewModel.login(email, password) },
+                            modifier = Modifier.fillMaxWidth(),
+                            enabled = email.isNotBlank() && password.isNotBlank(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = OrangePrimary,
+                                contentColor = BackgroundDark,
+                            ),
+                        ) {
+                            Text("Sign In", fontWeight = FontWeight.Bold)
+                        }
+
+                        // Google sign-in button
+                        OutlinedButton(
+                            onClick = { viewModel.googleSignIn(context) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            border = BorderStroke(1.dp, OutlineColor),
+                        ) {
+                            Text("Sign in with Google")
+                        }
+                    }
+
+                    if (uiState is AuthUiState.Error) {
+                        Text(
+                            text = (uiState as AuthUiState.Error).message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
                         )
                     }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = OrangePrimary,
-                    focusedLabelColor = OrangePrimary,
-                    cursorColor = OrangePrimary,
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            if (uiState is AuthUiState.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(48.dp),
-                    color = OrangePrimary,
-                )
-            } else {
-                Button(
-                    onClick = { viewModel.login(email, password) },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = email.isNotBlank() && password.isNotBlank(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = OrangePrimary,
-                        contentColor = Color(0xFF0D0D0D),
-                    ),
-                ) {
-                    Text("Sign In", fontWeight = FontWeight.Bold)
                 }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                OutlinedButton(
-                    onClick = { viewModel.googleSignIn(context) },
-                    modifier = Modifier.fillMaxWidth(),
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline,
-                    ),
-                ) {
-                    Text("Sign in with Google")
-                }
-            }
-
-            if (uiState is AuthUiState.Error) {
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = (uiState as AuthUiState.Error).message,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -219,6 +259,8 @@ fun LoginScreen(
             TextButton(onClick = onNavigateToRegister) {
                 Text("Don't have an account? Register")
             }
+
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }

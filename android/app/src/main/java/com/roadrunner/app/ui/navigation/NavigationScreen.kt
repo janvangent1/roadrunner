@@ -39,6 +39,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.roadrunner.app.data.local.NavigationSessionManager
+import com.roadrunner.app.ui.theme.OrangePrimary
+import com.roadrunner.app.ui.theme.SurfaceDark
 import com.roadrunner.app.data.remote.dto.WaypointDto
 import kotlinx.coroutines.delay
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -211,7 +213,7 @@ private fun HudOverlay(state: NavigationUiState, modifier: Modifier = Modifier) 
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = Color.Black.copy(alpha = 0.65f),
+            containerColor = SurfaceDark.copy(alpha = 0.92f),
         ),
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -239,7 +241,7 @@ private fun HudTile(label: String, value: String) {
         Text(
             text = value,
             style = MaterialTheme.typography.titleMedium,
-            color = Color.White,
+            color = OrangePrimary,
         )
     }
 }
