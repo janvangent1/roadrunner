@@ -1,4 +1,3 @@
-import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
 import { Difficulty, WaypointType } from '@prisma/client';
 import { prisma } from '../lib/prisma';
@@ -28,6 +27,21 @@ async function streamToBuffer(stream: NodeJS.ReadableStream): Promise<Buffer> {
     stream.on('end', () => resolve(Buffer.concat(chunks)));
     stream.on('error', reject);
   });
+}
+
+/** Extract center coordinates from GPX XML */
+function extractGpxCenter(gpxBuffer: Buffer): { centerLat: number; centerLng: number } | null {
+  try {
+    const gpxText = gpxBuffer.toString('utf-8');
+    const latMatches = [...gpxText.matchAll(/lat="([^"]+)"/g)].map(m => parseFloat(m[1]));
+    const lngMatches = [...gpxText.matchAll(/lon="([^"]+)"/g)].map(m => parseFloat(m[1]));
+    if (latMatches.length === 0 || lngMatches.length === 0) return null;
+    const centerLat = latMatches.reduce((a, b) => a + b, 0) / latMatches.length;
+    const centerLng = lngMatches.reduce((a, b) => a + b, 0) / lngMatches.length;
+    return { centerLat, centerLng };
+  } catch {
+    return null;
+  }
 }
 
 async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void> {
@@ -117,6 +131,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     // Encrypt GPX in memory — plaintext never written to disk or stored
     const gpxEncrypted = await encryptGpx(gpxBuffer, Buffer.from(routeId));
 
+    // Extract center coordinates from GPX for map preview
+    const center = extractGpxCenter(gpxBuffer);
+
     // Create route (and waypoints) in a single transaction
     const route = await prisma.$transaction(async (tx) => {
       const created = await tx.route.create({
@@ -130,6 +147,8 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
           estimatedDurationMinutes,
           distanceKm,
           published: false,
+          centerLat: center?.centerLat ?? null,
+          centerLng: center?.centerLng ?? null,
           gpxEncrypted,
           ...(waypointsData && {
             waypoints: {
@@ -153,6 +172,8 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
           estimatedDurationMinutes: true,
           distanceKm: true,
           published: true,
+          centerLat: true,
+          centerLng: true,
           createdAt: true,
           updatedAt: true,
           // gpxEncrypted intentionally excluded from response
@@ -216,6 +237,8 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
       distanceKm?: number;
       published?: boolean;
       gpxEncrypted?: Buffer;
+      centerLat?: number | null;
+      centerLng?: number | null;
     } = {};
 
     if (contentType.includes('multipart/form-data')) {
@@ -225,6 +248,13 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         // New GPX file provided — read into memory and re-encrypt
         const gpxBuffer = await streamToBuffer(data.file);
         updateData.gpxEncrypted = await encryptGpx(gpxBuffer, Buffer.from(id));
+
+        // Update center coordinates from the new GPX
+        const center = extractGpxCenter(gpxBuffer);
+        if (center) {
+          updateData.centerLat = center.centerLat;
+          updateData.centerLng = center.centerLng;
+        }
 
         const fields = data.fields as Record<string, { value: string } | undefined>;
         if (fields['title']?.value) updateData.title = fields['title'].value;
@@ -282,6 +312,8 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         estimatedDurationMinutes: true,
         distanceKm: true,
         published: true,
+        centerLat: true,
+        centerLng: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -352,6 +384,8 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         estimatedDurationMinutes: true,
         distanceKm: true,
         published: true,
+        centerLat: true,
+        centerLng: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -430,5 +464,5 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
   });
 }
 
-export const adminRouteHandlers = fp(adminRouteHandlersPlugin);
+export const adminRouteHandlers = adminRouteHandlersPlugin;
 export default adminRouteHandlers;

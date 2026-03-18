@@ -1,4 +1,3 @@
-import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
 import { prisma } from '../lib/prisma';
 import { redisGet, redisSet } from '../lib/redis';
@@ -34,6 +33,8 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
         estimatedDurationMinutes: true,
         distanceKm: true,
         published: true,
+        centerLat: true,
+        centerLng: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -71,6 +72,8 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
         estimatedDurationMinutes: true,
         distanceKm: true,
         published: true,
+        centerLat: true,
+        centerLng: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -152,5 +155,5 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
   });
 }
 
-export const routeHandlers = fp(routeHandlersPlugin);
+export const routeHandlers = routeHandlersPlugin;
 export default routeHandlers;

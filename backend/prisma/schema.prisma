@@ -68,6 +68,8 @@ model Route {
   estimatedDurationMinutes Int        @map("estimated_duration_minutes")
   distanceKm               Decimal    @map("distance_km") @db.Decimal(8, 2)
   published                Boolean    @default(false)
+  centerLat                Float?     @map("center_lat")
+  centerLng                Float?     @map("center_lng")
   gpxEncrypted             Bytes?     @map("gpx_encrypted")
   waypoints                Waypoint[]
   licenses                 License[]

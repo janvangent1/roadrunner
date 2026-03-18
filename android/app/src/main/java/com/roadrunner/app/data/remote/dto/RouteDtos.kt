@@ -25,6 +25,8 @@ data class RouteDto(
     val createdAt: String,
     val updatedAt: String,
     val waypoints: List<WaypointDto> = emptyList(),
+    val centerLat: Double? = null,
+    val centerLng: Double? = null,
 )
 
 data class LicenseCheckRequest(

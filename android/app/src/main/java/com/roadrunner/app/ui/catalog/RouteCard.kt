@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material.icons.rounded.Schedule
@@ -55,7 +56,19 @@ fun RouteCard(
         ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(12.dp),
     ) {
+        Column {
+        // Map preview (only if center coords available)
+        if (route.route.centerLat != null && route.route.centerLng != null) {
+            RouteMapPreview(
+                lat = route.route.centerLat,
+                lng = route.route.centerLng,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+            )
+        }
         Row(modifier = Modifier.fillMaxWidth()) {
             // Left orange accent stripe
             Box(
@@ -150,6 +163,7 @@ fun RouteCard(
                 }
             }
         }
+        } // end Column
     }
 }
 

@@ -1,0 +1,2 @@
+ALTER TABLE "routes" ADD COLUMN "center_lat" DOUBLE PRECISION;
+ALTER TABLE "routes" ADD COLUMN "center_lng" DOUBLE PRECISION;
