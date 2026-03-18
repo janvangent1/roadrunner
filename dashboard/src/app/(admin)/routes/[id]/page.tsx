@@ -23,7 +23,6 @@ const schema = z.object({
   terrainType: z.string().min(1, 'Required'),
   region: z.string().min(1, 'Required'),
   estimatedDurationMinutes: z.coerce.number().int().positive(),
-  distanceKm: z.coerce.number().positive(),
   published: z.boolean(),
 });
 type FormValues = z.infer<typeof schema>;
@@ -35,6 +34,7 @@ export default function EditRoutePage() {
   const [loading, setLoading] = useState(true);
   const [waypoints, setWaypoints] = useState<WaypointRow[]>([]);
   const [savingWaypoints, setSavingWaypoints] = useState(false);
+  const [computedDistance, setComputedDistance] = useState<number | null>(null);
 
   const form = useForm<FormValues>({ resolver: zodResolver(schema) });
 
@@ -48,9 +48,9 @@ export default function EditRoutePage() {
           terrainType: route.terrainType,
           region: route.region,
           estimatedDurationMinutes: route.estimatedDurationMinutes,
-          distanceKm: route.distanceKm,
           published: route.published,
         });
+        setComputedDistance(route.distanceKm);
         if (route.waypoints) {
           setWaypoints(
             route.waypoints.map((w: Waypoint) => ({
@@ -78,7 +78,6 @@ export default function EditRoutePage() {
         terrainType: values.terrainType,
         region: values.region,
         estimatedDurationMinutes: values.estimatedDurationMinutes,
-        distanceKm: values.distanceKm,
         published: values.published,
       });
       toast.success('Route updated');
@@ -154,9 +153,12 @@ export default function EditRoutePage() {
             <FormField control={form.control} name="estimatedDurationMinutes" render={({ field }) => (
               <FormItem><FormLabel>Duration (min) *</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
             )} />
-            <FormField control={form.control} name="distanceKm" render={({ field }) => (
-              <FormItem><FormLabel>Distance (km) *</FormLabel><FormControl><Input type="number" step="0.1" {...field} /></FormControl><FormMessage /></FormItem>
-            )} />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground/80">Distance (km)</label>
+              <div className="flex h-9 items-center rounded-md border border-border bg-secondary/30 px-3 text-sm text-muted-foreground">
+                {computedDistance != null ? `${computedDistance} km (auto-computed)` : 'Auto-computed from GPX'}
+              </div>
+            </div>
           </div>
 
           <FormField control={form.control} name="published" render={({ field }) => (

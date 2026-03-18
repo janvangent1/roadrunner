@@ -36,7 +36,6 @@ const schema = z.object({
   terrainType: z.string().min(1, 'Terrain type required'),
   region: z.string().min(1, 'Region required'),
   estimatedDurationMinutes: z.coerce.number().int().positive('Must be positive'),
-  distanceKm: z.coerce.number().positive('Must be positive'),
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -72,7 +71,6 @@ export default function NewRoutePage() {
     formData.append('terrainType', values.terrainType);
     formData.append('region', values.region);
     formData.append('estimatedDurationMinutes', String(values.estimatedDurationMinutes));
-    formData.append('distanceKm', String(values.distanceKm));
 
     if (waypoints.length > 0) {
       const waypointsData = waypoints.map((wp, i) => ({
@@ -105,6 +103,9 @@ export default function NewRoutePage() {
           accept=".gpx,application/gpx+xml,application/xml,text/xml"
           onChange={(e) => setGpxFile(e.target.files?.[0] ?? null)}
         />
+        <p className="text-xs text-muted-foreground">
+          Distance will be automatically calculated from the GPX file.
+        </p>
       </div>
 
       <Form {...form}>
@@ -137,7 +138,7 @@ export default function NewRoutePage() {
             )}
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-4">
             <FormField
               control={form.control}
               name="difficulty"
@@ -199,20 +200,6 @@ export default function NewRoutePage() {
                   <FormLabel>Duration (minutes) *</FormLabel>
                   <FormControl>
                     <Input type="number" min="1" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="distanceKm"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Distance (km) *</FormLabel>
-                  <FormControl>
-                    <Input type="number" min="0.1" step="0.1" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
