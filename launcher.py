@@ -485,7 +485,8 @@ class RoadrunnerLauncher(tk.Tk):
 
     def _build_and_install(self):
         self._log_step("Building Android app (motorcycleDebug) — this takes a few minutes...")
-        code = run(f'"{GRADLEW}" installMotorcycleDebug', log=self._log_out)
+        android_dir = os.path.join(PROJECT_ROOT, "android")
+        code = run(f'"{GRADLEW}" installMotorcycleDebug', cwd=android_dir, log=self._log_out)
         if code != 0:
             raise RuntimeError("Gradle build failed. See output above.")
         self._log_ok("App installed.")
