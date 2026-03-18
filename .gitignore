@@ -1,0 +1,52 @@
+# Credentials — never commit
+PASSWORDS.md
+*.passwords.md
+secrets.md
+
+# Environment files
+.env
+.env.local
+.env.*.local
+backend/.env
+dashboard/.env
+dashboard/.env.local
+
+# Node
+node_modules/
+backend/node_modules/
+dashboard/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+dashboard/.next/
+dashboard/out/
+dashboard/.vercel/
+dashboard/tsconfig.tsbuildinfo
+
+# Android build artifacts
+android/app/build/
+android/.gradle/
+android/local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Claude
+.claude/
