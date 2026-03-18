@@ -16,6 +16,14 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
+  if (res.status === 401) {
+    // Token expired or invalid — clear it and redirect to login
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken');
+      window.location.href = '/login';
+    }
+    throw new Error('Session expired. Please log in again.');
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error((body as { error?: string }).error ?? res.statusText);

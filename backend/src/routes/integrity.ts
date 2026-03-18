@@ -1,4 +1,3 @@
-import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { google } from 'googleapis';
@@ -47,4 +46,4 @@ async function integrityHandlers(fastify: FastifyInstance) {
   });
 }
 
-export default fp(integrityHandlers);
+export default integrityHandlers;

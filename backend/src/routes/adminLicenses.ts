@@ -1,4 +1,3 @@
-import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
 import { LicenseType } from '@prisma/client';
 import { z } from 'zod';
@@ -168,5 +167,5 @@ async function adminLicenseHandlersPlugin(fastify: FastifyInstance): Promise<voi
   });
 }
 
-export const adminLicenseHandlers = fp(adminLicenseHandlersPlugin);
+export const adminLicenseHandlers = adminLicenseHandlersPlugin;
 export default adminLicenseHandlers;

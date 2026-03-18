@@ -1,4 +1,3 @@
-import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
@@ -266,9 +265,5 @@ async function authRoutes(fastify: FastifyInstance): Promise<void> {
   });
 }
 
-export default fp(authRoutes, {
-  name: 'auth-routes',
-  fastify: '4.x',
-});
-
+export default authRoutes;
 export { authRoutes };

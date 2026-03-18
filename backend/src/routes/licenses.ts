@@ -1,4 +1,3 @@
-import fp from 'fastify-plugin';
 import { FastifyInstance, FastifyReply } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma';
@@ -183,5 +182,5 @@ function buildSessionResponse(
   });
 }
 
-export const licenseHandlers = fp(licenseHandlersPlugin);
+export const licenseHandlers = licenseHandlersPlugin;
 export default licenseHandlers;

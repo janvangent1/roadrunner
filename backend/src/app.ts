@@ -1,4 +1,5 @@
 import Fastify, { FastifyInstance, FastifyServerOptions } from 'fastify';
+import fastifyCors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 import fastifyMultipart from '@fastify/multipart';
@@ -18,6 +19,11 @@ export async function buildApp(opts: FastifyServerOptions = {}): Promise<Fastify
   });
 
   // Register plugins
+  await app.register(fastifyCors, {
+    origin: process.env.CORS_ORIGIN?.split(',') ?? ['http://localhost:4001'],
+    credentials: true,
+  });
+
   await app.register(fastifyJwt, {
     secret: process.env.JWT_SECRET || (() => { throw new Error('JWT_SECRET env var is required'); })(),
   });

@@ -4,7 +4,7 @@
   "description": "Roadrunner offroad route API",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --require ./src/polyfills.js src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
     "migrate": "prisma migrate deploy",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fastify/cookie": "^9.0.0",
+    "@fastify/cors": "^8.5.0",
     "@fastify/jwt": "^8.0.0",
     "@fastify/multipart": "^8.0.0",
     "@prisma/client": "^5.0.0",

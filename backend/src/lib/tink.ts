@@ -1,7 +1,7 @@
 import { aead, binaryInsecure } from 'tink-crypto';
-import { Aead } from 'tink-crypto/aead/internal/aead';
 
-let keysetHandle: Awaited<ReturnType<typeof binaryInsecure.deserializeKeyset>> | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let keysetHandle: any | null = null;
 
 /**
  * Initialize Tink with the keyset from the TINK_KEYSET_JSON env var.
@@ -11,6 +11,7 @@ let keysetHandle: Awaited<ReturnType<typeof binaryInsecure.deserializeKeyset>> |
  *
  * To generate a keyset for development:
  *   node -e "
+ *     require('./src/polyfills.js');
  *     const { aead, binaryInsecure } = require('tink-crypto');
  *     aead.register();
  *     aead.generateNew(aead.aes256GcmKeyTemplate()).then(h => {
@@ -39,7 +40,7 @@ export async function initTink(): Promise<void> {
  */
 export async function encryptGpx(plaintext: Buffer, associatedData?: Buffer): Promise<Buffer> {
   if (!keysetHandle) throw new Error('Tink not initialized — call initTink() first');
-  const primitive = await keysetHandle.getPrimitive<Aead>(Aead);
+  const primitive = await keysetHandle.getPrimitive(aead.Aead);
   const encrypted = await primitive.encrypt(
     new Uint8Array(plaintext),
     associatedData ? new Uint8Array(associatedData) : new Uint8Array(0),
@@ -55,7 +56,7 @@ export async function encryptGpx(plaintext: Buffer, associatedData?: Buffer): Pr
  */
 export async function decryptGpx(ciphertext: Buffer, associatedData?: Buffer): Promise<Buffer> {
   if (!keysetHandle) throw new Error('Tink not initialized — call initTink() first');
-  const primitive = await keysetHandle.getPrimitive<Aead>(Aead);
+  const primitive = await keysetHandle.getPrimitive(aead.Aead);
   const decrypted = await primitive.decrypt(
     new Uint8Array(ciphertext),
     associatedData ? new Uint8Array(associatedData) : new Uint8Array(0),
