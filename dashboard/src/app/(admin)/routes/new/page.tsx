@@ -44,7 +44,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function NewRoutePage() {
   const router = useRouter();
-  const [gpxFile, setGpxFile] = useState<File | null>(null);
+  const [gpxFiles, setGpxFiles] = useState<File[]>([]);
   const [waypoints, setWaypoints] = useState<WaypointRow[]>([]);
 
   const form = useForm<FormValues>({
@@ -53,8 +53,8 @@ export default function NewRoutePage() {
   });
 
   async function onSubmit(values: FormValues) {
-    if (!gpxFile) {
-      toast.error('Please select a GPX file');
+    if (gpxFiles.length === 0) {
+      toast.error('Please select at least one GPX file');
       return;
     }
 
@@ -67,7 +67,9 @@ export default function NewRoutePage() {
     }
 
     const formData = new FormData();
-    formData.append('gpx', gpxFile);
+    for (const file of gpxFiles) {
+      formData.append('gpx', file);
+    }
     formData.append('title', values.title);
     if (values.description) formData.append('description', values.description);
     formData.append('difficulty', values.difficulty);
@@ -103,12 +105,24 @@ export default function NewRoutePage() {
       <h1 className="text-2xl font-semibold">Upload Route</h1>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">GPX File *</label>
+        <label className="text-sm font-medium">GPX File(s) *</label>
         <Input
           type="file"
           accept=".gpx,application/gpx+xml,application/xml,text/xml"
-          onChange={(e) => setGpxFile(e.target.files?.[0] ?? null)}
+          multiple
+          onChange={(e) => setGpxFiles(Array.from(e.target.files ?? []))}
         />
+        {gpxFiles.length > 1 && (
+          <div className="rounded-md border border-border bg-secondary/30 p-3 space-y-1">
+            <p className="text-xs font-medium text-foreground">{gpxFiles.length} files selected — will be merged into one route:</p>
+            {gpxFiles.map((f, i) => (
+              <p key={i} className="text-xs text-muted-foreground pl-2">Part {i + 1}: {f.name}</p>
+            ))}
+          </div>
+        )}
+        {gpxFiles.length === 1 && (
+          <p className="text-xs text-muted-foreground">{gpxFiles[0].name}</p>
+        )}
         <p className="text-xs text-muted-foreground">
           Distance will be automatically calculated from the GPX file.
         </p>

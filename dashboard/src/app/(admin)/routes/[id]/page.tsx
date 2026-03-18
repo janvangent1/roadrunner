@@ -38,6 +38,8 @@ export default function EditRoutePage() {
   const [waypoints, setWaypoints] = useState<WaypointRow[]>([]);
   const [savingWaypoints, setSavingWaypoints] = useState(false);
   const [computedDistance, setComputedDistance] = useState<number | null>(null);
+  const [newGpxFiles, setNewGpxFiles] = useState<File[]>([]);
+  const [replacingGpx, setReplacingGpx] = useState(false);
 
   const form = useForm<FormValues>({ resolver: zodResolver(schema) });
 
@@ -111,6 +113,25 @@ export default function EditRoutePage() {
       toast.error(e instanceof Error ? e.message : 'Save failed');
     } finally {
       setSavingWaypoints(false);
+    }
+  }
+
+  async function handleReplaceGpx() {
+    if (newGpxFiles.length === 0) {
+      toast.error('Select at least one GPX file');
+      return;
+    }
+    setReplacingGpx(true);
+    try {
+      const formData = new FormData();
+      for (const file of newGpxFiles) formData.append('gpx', file);
+      await apiFetch(`/admin/routes/${id}`, { method: 'PATCH', body: formData });
+      toast.success('GPX replaced — distance and map preview updated');
+      setNewGpxFiles([]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Replace failed');
+    } finally {
+      setReplacingGpx(false);
     }
   }
 
@@ -243,6 +264,30 @@ export default function EditRoutePage() {
             />
           </div>
         </Form>
+      </div>
+
+      <div className="border-t pt-6 space-y-4">
+        <div>
+          <h2 className="text-lg font-medium">Replace GPX Track</h2>
+          <p className="text-sm text-muted-foreground">Upload one or more GPX files to replace the current track. Multiple files will be merged.</p>
+        </div>
+        <Input
+          type="file"
+          accept=".gpx,application/gpx+xml,application/xml,text/xml"
+          multiple
+          onChange={(e) => setNewGpxFiles(Array.from(e.target.files ?? []))}
+        />
+        {newGpxFiles.length > 1 && (
+          <div className="rounded-md border border-border bg-secondary/30 p-3 space-y-1">
+            <p className="text-xs font-medium text-foreground">{newGpxFiles.length} files — will be merged:</p>
+            {newGpxFiles.map((f, i) => (
+              <p key={i} className="text-xs text-muted-foreground pl-2">Part {i + 1}: {f.name}</p>
+            ))}
+          </div>
+        )}
+        <Button type="button" variant="outline" onClick={handleReplaceGpx} disabled={replacingGpx || newGpxFiles.length === 0}>
+          {replacingGpx ? 'Replacing...' : 'Replace GPX'}
+        </Button>
       </div>
 
       <div className="border-t pt-6 space-y-4">

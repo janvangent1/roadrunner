@@ -92,6 +92,41 @@ function extractGpxData(gpxBuffer: Buffer): {
   }
 }
 
+/**
+ * Merge multiple GPX buffers into a single GPX containing all tracks.
+ * Each input file's <trk> blocks are extracted and combined.
+ * If a file has no <trk> blocks, <rte> blocks are converted to tracks.
+ * Plaintext — caller must encrypt the result.
+ */
+function mergeGpxFiles(gpxBuffers: Buffer[]): Buffer {
+  const tracks: string[] = [];
+  for (const buf of gpxBuffers) {
+    const text = buf.toString('utf-8');
+    // Extract <trk>...</trk> blocks (multiline)
+    const trkMatches = [...text.matchAll(/<trk[\s\S]*?<\/trk>/g)];
+    for (const m of trkMatches) tracks.push(m[0]);
+
+    // If no tracks found, try converting <rte> route blocks to tracks
+    if (trkMatches.length === 0) {
+      const rteMatches = [...text.matchAll(/<rte[\s\S]*?<\/rte>/g)];
+      for (const m of rteMatches) {
+        const converted = m[0]
+          .replace(/<rte\b/g, '<trk').replace(/<\/rte>/g, '</trk>')
+          .replace(/<rtept\b/g, '<trkpt').replace(/<\/rtept>/g, '</trkpt>');
+        tracks.push(converted);
+      }
+    }
+  }
+
+  if (tracks.length === 0) {
+    // Fallback: return first buffer unchanged
+    return gpxBuffers[0];
+  }
+
+  const merged = `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Roadrunner" xmlns="http://www.topografix.com/GPX/1/1">\n${tracks.join('\n')}\n</gpx>`;
+  return Buffer.from(merged, 'utf-8');
+}
+
 async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void> {
   /**
    * POST /api/v1/admin/routes
@@ -102,28 +137,37 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
   fastify.post('/', {
     preHandler: [requireAuth, requireAdmin],
   }, async (request, reply) => {
-    const data = await request.file();
-    if (!data) {
-      return reply.code(400).send({ error: 'No file uploaded — expected multipart/form-data with gpx field' });
+    // Collect all multipart parts — supports one or multiple GPX files
+    const gpxBuffers: Buffer[] = [];
+    const fields: Record<string, string> = {};
+
+    for await (const part of request.parts()) {
+      if (part.type === 'file') {
+        const buf = await streamToBuffer(part.file);
+        gpxBuffers.push(buf);
+      } else {
+        fields[part.fieldname] = part.value as string;
+      }
     }
 
-    // Read all file bytes into memory — NEVER written to disk
-    const gpxBuffer = await streamToBuffer(data.file);
+    if (gpxBuffers.length === 0) {
+      return reply.code(400).send({ error: 'No GPX file uploaded — expected multipart/form-data with one or more gpx files' });
+    }
 
-    // Collect remaining form fields
-    const fields = data.fields as Record<string, { value: string } | undefined>;
+    // Merge all GPX parts into one buffer (single file passes through unchanged)
+    const gpxBuffer = gpxBuffers.length === 1 ? gpxBuffers[0] : mergeGpxFiles(gpxBuffers);
 
-    const title = fields['title']?.value;
-    const description = fields['description']?.value ?? null;
-    const difficulty = fields['difficulty']?.value;
-    const terrainType = fields['terrainType']?.value;
-    const region = fields['region']?.value;
-    const estimatedDurationMinutesStr = fields['estimatedDurationMinutes']?.value;
-    const distanceKmStr = fields['distanceKm']?.value;
-    const waypointsStr = fields['waypoints']?.value;
-    const priceDayPassStr = fields['priceDayPass']?.value;
-    const priceMultiDayStr = fields['priceMultiDay']?.value;
-    const pricePermanentStr = fields['pricePermanent']?.value;
+    const title = fields['title'];
+    const description = fields['description'] ?? null;
+    const difficulty = fields['difficulty'];
+    const terrainType = fields['terrainType'];
+    const region = fields['region'];
+    const estimatedDurationMinutesStr = fields['estimatedDurationMinutes'];
+    const distanceKmStr = fields['distanceKm'];
+    const waypointsStr = fields['waypoints'];
+    const priceDayPassStr = fields['priceDayPass'];
+    const priceMultiDayStr = fields['priceMultiDay'];
+    const pricePermanentStr = fields['pricePermanent'];
 
     // Validate required fields (distanceKm is optional — auto-computed from GPX)
     if (!title || !difficulty || !terrainType || !region || !estimatedDurationMinutesStr) {
@@ -308,41 +352,46 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     } = {};
 
     if (contentType.includes('multipart/form-data')) {
-      // Multipart: may include a new GPX file
-      const data = await request.file();
-      if (data) {
-        // New GPX file provided — read into memory and re-encrypt
-        const gpxBuffer = await streamToBuffer(data.file);
-        updateData.gpxEncrypted = await encryptGpx(gpxBuffer, Buffer.from(id));
+      const gpxBuffers: Buffer[] = [];
+      const fields: Record<string, string> = {};
+      for await (const part of request.parts()) {
+        if (part.type === 'file') {
+          const buf = await streamToBuffer(part.file);
+          gpxBuffers.push(buf);
+        } else {
+          fields[part.fieldname] = part.value as string;
+        }
+      }
 
-        // Re-extract center, distance, and simplified polyline from the new GPX
+      if (gpxBuffers.length > 0) {
+        const gpxBuffer = gpxBuffers.length === 1 ? gpxBuffers[0] : mergeGpxFiles(gpxBuffers);
+        updateData.gpxEncrypted = await encryptGpx(gpxBuffer, Buffer.from(id));
         const gpxData = extractGpxData(gpxBuffer);
         updateData.centerLat = gpxData.centerLat;
         updateData.centerLng = gpxData.centerLng;
         updateData.distanceKm = gpxData.distanceKm;
         updateData.routePoints = gpxData.routePoints;
+      }
 
-        const fields = data.fields as Record<string, { value: string } | undefined>;
-        if (fields['title']?.value) updateData.title = fields['title'].value;
-        if (fields['description']?.value !== undefined) updateData.description = fields['description']?.value ?? null;
-        if (fields['terrainType']?.value) updateData.terrainType = fields['terrainType'].value;
-        if (fields['region']?.value) updateData.region = fields['region'].value;
-        if (fields['estimatedDurationMinutes']?.value) {
-          updateData.estimatedDurationMinutes = parseInt(fields['estimatedDurationMinutes'].value, 10);
+      if (fields['title']) updateData.title = fields['title'];
+      if (fields['description'] !== undefined) updateData.description = fields['description'] ?? null;
+      if (fields['terrainType']) updateData.terrainType = fields['terrainType'];
+      if (fields['region']) updateData.region = fields['region'];
+      if (fields['estimatedDurationMinutes']) {
+        updateData.estimatedDurationMinutes = parseInt(fields['estimatedDurationMinutes'], 10);
+      }
+      if (fields['distanceKm']) {
+        updateData.distanceKm = parseFloat(fields['distanceKm']);
+      }
+      if (fields['published'] !== undefined) {
+        updateData.published = fields['published'] === 'true';
+      }
+      if (fields['difficulty']) {
+        const diff = fields['difficulty'];
+        if (!VALID_DIFFICULTIES.includes(diff)) {
+          return reply.code(400).send({ error: `Invalid difficulty. Must be one of: ${VALID_DIFFICULTIES.join(', ')}` });
         }
-        if (fields['distanceKm']?.value) {
-          updateData.distanceKm = parseFloat(fields['distanceKm'].value);
-        }
-        if (fields['published']?.value !== undefined) {
-          updateData.published = fields['published'].value === 'true';
-        }
-        if (fields['difficulty']?.value) {
-          const diff = fields['difficulty'].value;
-          if (!VALID_DIFFICULTIES.includes(diff)) {
-            return reply.code(400).send({ error: `Invalid difficulty. Must be one of: ${VALID_DIFFICULTIES.join(', ')}` });
-          }
-          updateData.difficulty = diff as Difficulty;
-        }
+        updateData.difficulty = diff as Difficulty;
       }
     } else {
       // JSON body: metadata-only update
