@@ -52,6 +52,7 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
       priceDayPass: r.priceDayPass ? Number(r.priceDayPass) : null,
       priceMultiDay: r.priceMultiDay ? Number(r.priceMultiDay) : null,
       pricePermanent: r.pricePermanent ? Number(r.pricePermanent) : null,
+      routePoints: r.routePoints ? JSON.parse(r.routePoints) : null,
     }));
 
     await redisSet(CATALOG_CACHE_KEY, JSON.stringify(result), CATALOG_CACHE_TTL);
@@ -120,6 +121,7 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
       priceDayPass: route.priceDayPass ? Number(route.priceDayPass) : null,
       priceMultiDay: route.priceMultiDay ? Number(route.priceMultiDay) : null,
       pricePermanent: route.pricePermanent ? Number(route.pricePermanent) : null,
+      routePoints: route.routePoints ? JSON.parse(route.routePoints) : null,
       waypoints: route.waypoints.map((w) => ({
         ...w,
         latitude: Number(w.latitude),

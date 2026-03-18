@@ -64,6 +64,7 @@ fun RouteCard(
             RouteMapPreview(
                 lat = route.route.centerLat,
                 lng = route.route.centerLng,
+                routePoints = route.route.routePoints,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
