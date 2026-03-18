@@ -54,6 +54,10 @@ async function licenseHandlersPlugin(fastify: FastifyInstance): Promise<void> {
       }
 
       // Cache hit with valid = true — skip DB query and issue session JWT
+      prisma.route.update({
+        where: { id: routeId },
+        data: { navigationCount: { increment: 1 } },
+      }).catch(() => { /* ignore */ });
       return buildSessionResponse(fastify, reply, userId, routeId, entry.expiresAt, entry.licenseType);
     }
 
@@ -103,6 +107,10 @@ async function licenseHandlersPlugin(fastify: FastifyInstance): Promise<void> {
       CACHE_TTL_SECONDS,
     );
 
+    prisma.route.update({
+      where: { id: routeId },
+      data: { navigationCount: { increment: 1 } },
+    }).catch(() => { /* ignore */ });
     return buildSessionResponse(fastify, reply, userId, routeId, expiresAtIso, license.type);
   });
 

@@ -71,6 +71,11 @@ model Route {
   centerLat                Float?     @map("center_lat")
   centerLng                Float?     @map("center_lng")
   routePoints              String?    @map("route_points")   // JSON: [[lat,lng],…] simplified polyline
+  priceDayPass             Decimal?   @map("price_day_pass")   @db.Decimal(8, 2)
+  priceMultiDay            Decimal?   @map("price_multi_day")  @db.Decimal(8, 2)
+  pricePermanent           Decimal?   @map("price_permanent")  @db.Decimal(8, 2)
+  viewCount                Int        @default(0) @map("view_count")
+  navigationCount          Int        @default(0) @map("navigation_count")
   gpxEncrypted             Bytes?     @map("gpx_encrypted")
   waypoints                Waypoint[]
   licenses                 License[]

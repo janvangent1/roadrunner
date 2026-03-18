@@ -36,6 +36,10 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
         centerLat: true,
         centerLng: true,
         routePoints: true,
+        priceDayPass: true,
+        priceMultiDay: true,
+        pricePermanent: true,
+        viewCount: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -45,6 +49,9 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
     const result = routes.map((r) => ({
       ...r,
       distanceKm: Number(r.distanceKm),
+      priceDayPass: r.priceDayPass ? Number(r.priceDayPass) : null,
+      priceMultiDay: r.priceMultiDay ? Number(r.priceMultiDay) : null,
+      pricePermanent: r.pricePermanent ? Number(r.pricePermanent) : null,
     }));
 
     await redisSet(CATALOG_CACHE_KEY, JSON.stringify(result), CATALOG_CACHE_TTL);
@@ -76,6 +83,10 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
         centerLat: true,
         centerLng: true,
         routePoints: true,
+        priceDayPass: true,
+        priceMultiDay: true,
+        pricePermanent: true,
+        viewCount: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -97,9 +108,18 @@ async function routeHandlersPlugin(fastify: FastifyInstance): Promise<void> {
       return reply.code(404).send({ error: 'Route not found' });
     }
 
+    // Increment view count asynchronously (don't await — don't slow down the response)
+    prisma.route.update({
+      where: { id },
+      data: { viewCount: { increment: 1 } },
+    }).catch(() => { /* ignore errors */ });
+
     return reply.send({
       ...route,
       distanceKm: Number(route.distanceKm),
+      priceDayPass: route.priceDayPass ? Number(route.priceDayPass) : null,
+      priceMultiDay: route.priceMultiDay ? Number(route.priceMultiDay) : null,
+      pricePermanent: route.pricePermanent ? Number(route.pricePermanent) : null,
       waypoints: route.waypoints.map((w) => ({
         ...w,
         latitude: Number(w.latitude),

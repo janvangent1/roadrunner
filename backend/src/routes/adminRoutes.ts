@@ -121,6 +121,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     const estimatedDurationMinutesStr = fields['estimatedDurationMinutes']?.value;
     const distanceKmStr = fields['distanceKm']?.value;
     const waypointsStr = fields['waypoints']?.value;
+    const priceDayPassStr = fields['priceDayPass']?.value;
+    const priceMultiDayStr = fields['priceMultiDay']?.value;
+    const pricePermanentStr = fields['pricePermanent']?.value;
 
     // Validate required fields (distanceKm is optional — auto-computed from GPX)
     if (!title || !difficulty || !terrainType || !region || !estimatedDurationMinutesStr) {
@@ -198,6 +201,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
           centerLat: gpxData.centerLat,
           centerLng: gpxData.centerLng,
           routePoints: gpxData.routePoints,
+          priceDayPass: priceDayPassStr ? parseFloat(priceDayPassStr) : null,
+          priceMultiDay: priceMultiDayStr ? parseFloat(priceMultiDayStr) : null,
+          pricePermanent: pricePermanentStr ? parseFloat(pricePermanentStr) : null,
           gpxEncrypted,
           ...(waypointsData && {
             waypoints: {
@@ -224,6 +230,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
           centerLat: true,
           centerLng: true,
           routePoints: true,
+          priceDayPass: true,
+          priceMultiDay: true,
+          pricePermanent: true,
           createdAt: true,
           updatedAt: true,
           // gpxEncrypted intentionally excluded from response
@@ -249,6 +258,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     return reply.code(201).send({
       ...route,
       distanceKm: Number(route.distanceKm),
+      priceDayPass: route.priceDayPass ? Number(route.priceDayPass) : null,
+      priceMultiDay: route.priceMultiDay ? Number(route.priceMultiDay) : null,
+      pricePermanent: route.pricePermanent ? Number(route.pricePermanent) : null,
       waypoints: route.waypoints.map((w) => ({
         ...w,
         latitude: Number(w.latitude),
@@ -290,6 +302,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
       centerLat?: number | null;
       centerLng?: number | null;
       routePoints?: string | null;
+      priceDayPass?: number | null;
+      priceMultiDay?: number | null;
+      pricePermanent?: number | null;
     } = {};
 
     if (contentType.includes('multipart/form-data')) {
@@ -348,6 +363,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         }
         updateData.difficulty = diff as Difficulty;
       }
+      if (body['priceDayPass'] !== undefined) updateData.priceDayPass = body['priceDayPass'] as number | null;
+      if (body['priceMultiDay'] !== undefined) updateData.priceMultiDay = body['priceMultiDay'] as number | null;
+      if (body['pricePermanent'] !== undefined) updateData.pricePermanent = body['pricePermanent'] as number | null;
     }
 
     const updated = await prisma.route.update({
@@ -366,6 +384,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         centerLat: true,
         centerLng: true,
         routePoints: true,
+        priceDayPass: true,
+        priceMultiDay: true,
+        pricePermanent: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -378,6 +399,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     return reply.send({
       ...updated,
       distanceKm: Number(updated.distanceKm),
+      priceDayPass: updated.priceDayPass ? Number(updated.priceDayPass) : null,
+      priceMultiDay: updated.priceMultiDay ? Number(updated.priceMultiDay) : null,
+      pricePermanent: updated.pricePermanent ? Number(updated.pricePermanent) : null,
     });
   });
 
@@ -439,6 +463,9 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
         centerLat: true,
         centerLng: true,
         routePoints: true,
+        priceDayPass: true,
+        priceMultiDay: true,
+        pricePermanent: true,
         createdAt: true,
         updatedAt: true,
         // gpxEncrypted intentionally excluded
@@ -447,7 +474,13 @@ async function adminRouteHandlersPlugin(fastify: FastifyInstance): Promise<void>
     });
 
     return reply.send(
-      routes.map((r) => ({ ...r, distanceKm: Number(r.distanceKm) }))
+      routes.map((r) => ({
+        ...r,
+        distanceKm: Number(r.distanceKm),
+        priceDayPass: r.priceDayPass ? Number(r.priceDayPass) : null,
+        priceMultiDay: r.priceMultiDay ? Number(r.priceMultiDay) : null,
+        pricePermanent: r.pricePermanent ? Number(r.pricePermanent) : null,
+      }))
     );
   });
 
